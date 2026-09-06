@@ -1,0 +1,75 @@
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import AppShell from './layouts/AppShell';
+import LandingPage from './pages/LandingPage';
+import DashboardPage from './pages/DashboardPage';
+import AssessmentPage from './pages/AssessmentPage';
+import RecommendationsPage from './pages/RecommendationsPage';
+import ExplorerPage from './pages/ExplorerPage';
+import SkillGapPage from './pages/SkillGapPage';
+import RoadmapPage from './pages/RoadmapPage';
+import JobsPage from './pages/JobsPage';
+import ResumePage from './pages/ResumePage';
+import ApplicationsPage from './pages/ApplicationsPage';
+import ChatPage from './pages/ChatPage';
+import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
+import CoursesPage from './pages/CoursesPage';
+import ProjectsPage from './pages/ProjectsPage';
+import SignUpPage from './pages/SignUpPage';
+import LoginPage from './pages/LoginPage';
+
+function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem('token')));
+
+  useEffect(() => {
+    const updateAuthState = () => setIsAuthenticated(Boolean(localStorage.getItem('token')));
+    window.addEventListener('storage', updateAuthState);
+    window.addEventListener('auth-changed', updateAuthState);
+    return () => {
+      window.removeEventListener('storage', updateAuthState);
+      window.removeEventListener('auth-changed', updateAuthState);
+    };
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/landing" element={<LandingPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="*"
+          element={
+            isAuthenticated ? (
+              <AppShell>
+                <Routes>
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/assessment" element={<AssessmentPage />} />
+                  <Route path="/recommendations" element={<RecommendationsPage />} />
+                  <Route path="/explorer" element={<ExplorerPage />} />
+                  <Route path="/skill-gap" element={<SkillGapPage />} />
+                  <Route path="/roadmap" element={<RoadmapPage />} />
+                  <Route path="/jobs" element={<JobsPage />} />
+                  <Route path="/resume" element={<ResumePage />} />
+                  <Route path="/applications" element={<ApplicationsPage />} />
+                  <Route path="/chat" element={<ChatPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/courses" element={<CoursesPage />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
+                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                </Routes>
+              </AppShell>
+            ) : (
+              <Navigate to="/landing" replace />
+            )
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
