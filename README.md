@@ -55,6 +55,14 @@ CREATE DATABASE career_navigator;
 
 Then run the SQL scripts inside `database/` once ready.
 
+To add repeatable demo data, after applying `database/schema.sql`, run:
+
+```bash
+npm run db:seed
+```
+
+This creates five linked demo records in every table. All seeded users use the password `DemoPass123!`.
+
 ## Running the App
 
 Backend:
