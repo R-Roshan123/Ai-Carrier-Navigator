@@ -5,6 +5,10 @@ export const navItems = [
   { label: 'Career Explorer', path: '/explorer', icon: 'Compass' },
   { label: 'Skill Gap', path: '/skill-gap', icon: 'Goal' },
   { label: 'Learning Roadmap', path: '/roadmap', icon: 'Route' },
+  { label: 'Career Roadmaps', path: '/career/roles', icon: 'Map' },
+  { label: 'Companies Hiring', path: '/career/companies', icon: 'Building2' },
+  { label: 'My Career Progress', path: '/career/progress', icon: 'TrendingUp' },
+  { label: 'My Certificates', path: '/career/certificates', icon: 'Award' },
   { label: 'Courses', path: '/courses', icon: 'BookOpen' },
   { label: 'Projects', path: '/projects', icon: 'FolderKanban' },
   { label: 'Jobs', path: '/jobs', icon: 'BriefcaseBusiness' },
@@ -13,6 +17,7 @@ export const navItems = [
   { label: 'AI Career Mentor', path: '/chat', icon: 'MessageSquareText' },
   { label: 'Profile', path: '/profile', icon: 'UserRound' },
   { label: 'Settings', path: '/settings', icon: 'Settings' },
+  { label: 'Career Admin', path: '/admin/career', icon: 'ShieldCheck', adminOnly: true },
 ];
 
 export const metrics = [

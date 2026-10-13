@@ -16,12 +16,18 @@ const pool = new Pool({
   max: 20,
 });
 
+// Read by features that need real persistence (auth, career module) to decide
+// between PostgreSQL and mock-data mode.
+export const dbState = { connected: false };
+
 export const connectDB = async () => {
   try {
     await pool.query('SELECT 1');
+    dbState.connected = true;
     console.log('PostgreSQL connected successfully.');
     return true;
   } catch (error) {
+    dbState.connected = false;
     console.warn(
       'PostgreSQL is not available. Continuing in mock-data mode for setup and UI validation.',
     );
