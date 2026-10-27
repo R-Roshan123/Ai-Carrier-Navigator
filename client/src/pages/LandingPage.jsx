@@ -1,11 +1,12 @@
 import { ArrowDownRight, ArrowRight, BookOpen, BrainCircuit, Briefcase, Check, Compass, Map, Sparkles, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { readCurrentUser } from '../utils/careerFormat';
+import ColorModeToggle from '../components/ColorModeToggle';
 
 const features = [
-  { number: '01', title: 'Know your direction', description: 'A thoughtful assessment turns your strengths and interests into a clear starting point.', icon: BrainCircuit, color: 'bg-violet-100 text-violet-700' },
-  { number: '02', title: 'Build the right skills', description: 'Follow a learning path shaped around the role you want and the skills you already have.', icon: Map, color: 'bg-lime-100 text-lime-800' },
-  { number: '03', title: 'Move with confidence', description: 'Find relevant roles, sharpen your resume, and keep your progress in one place.', icon: Briefcase, color: 'bg-sky-100 text-sky-800' },
+  { number: '01', title: 'Know your direction', description: 'A thoughtful assessment turns your strengths and interests into a clear starting point.', icon: BrainCircuit, color: 'bg-blue-100 text-blue-700' },
+  { number: '02', title: 'Build the right skills', description: 'Follow a learning path shaped around the role you want and the skills you already have.', icon: Map, color: 'bg-cyan-100 text-cyan-800' },
+  { number: '03', title: 'Move with confidence', description: 'Find relevant roles, sharpen your resume, and keep your progress in one place.', icon: Briefcase, color: 'bg-orange-100 text-orange-800' },
 ];
 
 export default function LandingPage() {
@@ -14,8 +15,8 @@ export default function LandingPage() {
   const isLoggedIn = Boolean(currentUser && localStorage.getItem('token'));
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[#f5f4f0] text-[#171717]">
-      <header className="relative z-20 mx-auto flex max-w-[1440px] items-center justify-between px-5 py-5 sm:px-9 lg:px-14">
+    <div className="cyber-theme landing-page min-h-screen overflow-hidden bg-[#f2f5f9] text-[#13203a]">
+      <header className="landing-nav relative z-20 mx-auto flex max-w-[1440px] items-center justify-between px-5 py-5 sm:px-9 lg:px-14">
         <a href="#top" className="flex items-center gap-3" aria-label="CareerPilot home">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#171717] text-lime-300"><Sparkles className="h-5 w-5" /></span>
           <span className="text-lg font-bold tracking-tight">CareerPilot</span>
@@ -27,6 +28,7 @@ export default function LandingPage() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <ColorModeToggle />
           {isLoggedIn ? (
             <button onClick={() => navigate(currentUser.role === 'admin' ? '/admin/career' : '/dashboard')} className="group inline-flex items-center gap-3 rounded-full bg-[#171717] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700">
               {currentUser.role === 'admin' ? 'Admin panel' : 'Go to dashboard'} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -43,7 +45,7 @@ export default function LandingPage() {
       </header>
 
       <main id="top">
-        <section className="mx-auto max-w-[1440px] px-5 pb-16 pt-8 sm:px-9 sm:pb-24 lg:px-14 lg:pt-12">
+        <section className="landing-hero mx-auto max-w-[1440px] px-5 pb-16 pt-8 sm:px-9 sm:pb-24 lg:px-14 lg:pt-12">
           <div className="grid gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-8">
             <div className="relative z-10">
               <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#585854]"><span className="h-2 w-2 rounded-full bg-violet-500" />A clearer way forward</div>
@@ -59,10 +61,10 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[610px] lg:ml-auto">
+            <div className="landing-hero-art relative mx-auto w-full max-w-[610px] lg:ml-auto">
               <div className="absolute -right-8 -top-8 h-48 w-48 rounded-full bg-lime-300/70 blur-3xl" />
               <div className="absolute -bottom-10 -left-8 h-52 w-52 rounded-full bg-violet-300/60 blur-3xl" />
-              <div className="relative rounded-[2rem] bg-[#171717] p-3 shadow-2xl shadow-black/15 sm:rotate-[2deg]">
+              <div className="landing-preview-card relative rounded-[2rem] bg-[#171717] p-3 shadow-2xl shadow-black/15 sm:rotate-[2deg]">
                 <div className="rounded-[1.45rem] bg-[#f9f9f6] p-5 sm:p-7">
                   <div className="flex items-center justify-between border-b border-black/10 pb-5">
                     <div><div className="text-xs font-medium text-[#85857f]">YOUR CAREER SNAPSHOT</div><div className="mt-1 text-lg font-semibold tracking-tight">A path taking shape</div></div>

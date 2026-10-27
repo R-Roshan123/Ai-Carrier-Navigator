@@ -1,4 +1,4 @@
-export default function ProgressRing({ value = 78, label = 'Career readiness', size = 128, color = '#1D4ED8' }) {
+export default function ProgressRing({ value = 78, label = 'Career readiness', size = 128, color = '#171717' }) {
   const radius = 52;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference - (value / 100) * circumference;
