@@ -1940,6 +1940,16 @@ img {
   transition: transform 520ms cubic-bezier(.22, 1, .36, 1) !important;
   will-change: transform;
 }
+/* On desktop the open sidebar sits beside the page instead of covering it: the page is
+   pushed right by the sidebar's width (17.5rem) and there is no backdrop. */
+.workspace-content { transition: padding-left 520ms cubic-bezier(.22, 1, .36, 1); }
+@media (min-width: 1024px) {
+  .workspace-content.has-sidebar { padding-left: 17.5rem; }
+  .workspace-drawer-backdrop { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workspace-content { transition: none; }
+}
 .workspace-drawer-toggle,
 .workspace-drawer-close {
   display: inline-grid;

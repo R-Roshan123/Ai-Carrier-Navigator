@@ -169,7 +169,8 @@ export default function AppShell({ children }) {
                 {index === 8 && <div className="my-4 border-t border-slate-800" />}
               <NavLink
                 to={item.path}
-                onClick={() => setMobileOpen(false)}
+                // On desktop the sidebar sits beside the page, so it stays open after navigating.
+                onClick={() => { if (window.innerWidth < 1024) setMobileOpen(false); }}
                 className={({ isActive }) =>
                   `workspace-nav-link flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
                     isActive
@@ -191,7 +192,7 @@ export default function AppShell({ children }) {
           </div>
         </aside>
 
-        <div className="min-w-0 flex-1">
+        <div className={`workspace-content min-w-0 flex-1 ${mobileOpen ? 'has-sidebar' : ''}`}>
           <header className="workspace-topbar sticky top-0 z-30 border-b border-black/[0.06] bg-[#f2f5f9]/90 backdrop-blur-xl">
             <div className="flex items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
               <div className="flex items-center gap-3">
