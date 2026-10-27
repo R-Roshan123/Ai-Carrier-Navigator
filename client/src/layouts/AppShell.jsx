@@ -27,6 +27,7 @@ import {
   X,
 } from 'lucide-react';
 import { navItems } from '../data/seedData';
+import FloatingAssistant from '../components/assistant/FloatingAssistant';
 
 const readCurrentUser = () => {
   try {
@@ -77,7 +78,7 @@ export default function AppShell({ children }) {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     window.dispatchEvent(new Event('auth-changed'));
-    navigate('/landing');
+    navigate('/');
   };
 
   return (
@@ -150,6 +151,7 @@ export default function AppShell({ children }) {
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-xs font-bold text-indigo-700">{userInitial}</span>
                   <div className="hidden text-left sm:block">
                     <div className="text-sm font-semibold text-slate-900">{currentUser?.name || 'User'}</div>
+                    <div className="text-[11px] text-slate-500">{currentUser?.role === 'admin' ? currentUser.designation || 'Admin' : currentUser?.department || 'Student'}</div>
                   </div>
                   <ChevronDown className="hidden h-4 w-4 text-slate-500 sm:block" />
                 </button>
@@ -161,6 +163,7 @@ export default function AppShell({ children }) {
           <main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">{children}</main>
         </div>
       </div>
+      <FloatingAssistant />
     </div>
   );
 }

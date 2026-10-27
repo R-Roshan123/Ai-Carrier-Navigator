@@ -15,6 +15,8 @@ import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import CoursesPage from './pages/CoursesPage';
+import CourseDetailPage from './pages/CourseDetailPage';
+import CertificatePage from './pages/CertificatePage';
 import ProjectsPage from './pages/ProjectsPage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
@@ -48,10 +50,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/landing" element={<Navigate to="/" replace />} />
+        <Route path="/login" element={<LoginPage key="student" portal="student" />} />
+        <Route path="/signup" element={<SignUpPage key="student" accountType="student" />} />
+        <Route path="/admin/login" element={<LoginPage key="admin" portal="admin" />} />
+        <Route path="/admin/signup" element={<SignUpPage key="admin" accountType="admin" />} />
+        <Route path="/certificate/:code" element={<CertificatePage />} />
         <Route
           path="*"
           element={
@@ -71,6 +76,7 @@ function App() {
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/courses" element={<CoursesPage />} />
+                  <Route path="/courses/:slug" element={<CourseDetailPage />} />
                   <Route path="/projects" element={<ProjectsPage />} />
                   <Route path="/career/roles" element={<ExploreRolesPage />} />
                   <Route path="/career/roles/:slug" element={<RoleDetailPage />} />
@@ -88,7 +94,7 @@ function App() {
                 </Routes>
               </AppShell>
             ) : (
-              <Navigate to="/landing" replace />
+              <Navigate to="/login" replace />
             )
           }
         />

@@ -160,14 +160,22 @@ select:focus-visible {
   }
 
   .resume-document,
-  .resume-document * {
+  .resume-document *,
+  .certificate-document,
+  .certificate-document * {
     visibility: visible;
   }
 
-  .resume-document {
+  .resume-document,
+  .certificate-document {
     position: absolute;
     inset: 0;
     width: 100%;
+  }
+
+  .certificate-document {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
 

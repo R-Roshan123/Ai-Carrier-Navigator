@@ -5,16 +5,18 @@ dotenv.config();
 
 const { Pool } = pg;
 
-const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL ||
-    'postgresql://postgres:postgres@localhost:5432/career_navigator',
-  ssl:
-    process.env.NODE_ENV === 'production' || process.env.SUPABASE_URL
-      ? { rejectUnauthorized: false }
-      : false,
-  max: 20,
-});
+export const connectionString =
+  process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/career_navigator';
+
+// A local PostgreSQL server usually has SSL turned off, so only hosted databases use it.
+const isLocalDatabase = /@(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(connectionString);
+
+export const sslConfig =
+  !isLocalDatabase && (process.env.NODE_ENV === 'production' || process.env.SUPABASE_URL)
+    ? { rejectUnauthorized: false }
+    : false;
+
+const pool = new Pool({ connectionString, ssl: sslConfig, max: 20 });
 
 // Read by features that need real persistence (auth, career module) to decide
 // between PostgreSQL and mock-data mode.
@@ -29,7 +31,7 @@ export const connectDB = async () => {
   } catch (error) {
     dbState.connected = false;
     console.warn(
-      'PostgreSQL is not available. Continuing in mock-data mode for setup and UI validation.',
+      `PostgreSQL is not available (${error.message}). Continuing in mock-data mode; sign up and login are disabled until the database is reachable.`,
     );
     return false;
   }
