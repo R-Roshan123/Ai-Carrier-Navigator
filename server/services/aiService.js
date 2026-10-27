@@ -193,20 +193,6 @@ export const aiService = {
 
     return { success: true, provider: DEFAULT_MODEL, match: 0 };
   },
-
-  async careerChat(message, context) {
-    if (!process.env.OPENAI_API_KEY) {
-      return {
-        success: true,
-        provider: 'fallback',
-        message: fallbackMessage,
-        reply:
-          'Based on your target career and current progress, you should focus on SQL and one portfolio project before applying to roles. Your strongest path is to sharpen your analytical skills and continue building demonstrable work.',
-      };
-    }
-
-    return { success: true, provider: DEFAULT_MODEL, reply: '' };
-  },
 };
 
 export default aiService;

@@ -2,6 +2,10 @@ import { BrainCircuit, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { roleAssessments } from '../data/roleAssessments';
+import { getRole } from '../data/roleCareerData';
+import useApiData from '../hooks/useApiData';
+import { courseApi } from '../services/courseApi';
+import { summarizeLearning } from '../utils/learningProgress';
 import { readScores, scoreLevel } from '../utils/assessmentScores';
 import { readTargetCareer, saveTargetCareer } from '../utils/targetCareer';
 
@@ -12,6 +16,7 @@ export default function RecommendationsPage() {
   const [category, setCategory] = useState('');
   const navigate = useNavigate();
   const scores = readScores();
+  const learning = useApiData(() => courseApi.getProgress(), []);
 
   // Assessed roles first, best match on top; unassessed roles keep their catalogue order.
   const roles = roleAssessments
@@ -58,6 +63,7 @@ export default function RecommendationsPage() {
         {roles.map((role) => {
           const { score } = role;
           const level = score && scoreLevel(score.best);
+          const learned = summarizeLearning(learning.data, getRole(role.slug));
           return (
             <div key={role.slug} className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-start justify-between gap-3">
@@ -94,6 +100,18 @@ export default function RecommendationsPage() {
                   ))}
                 </div>
               </div>
+
+              {learning.data && (
+                <div className="mt-4 rounded-2xl bg-slate-50 p-3 text-sm">
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span>Learning roadmap · {learned.topicsDone}/{learned.topicsTotal} topics · course {learned.lessonsDone}/{learned.lessonsTotal} lessons{learned.certificate ? ' · Certified' : ''}</span>
+                    <span className="font-semibold text-slate-800">{learned.roadmapPercent}%</span>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
+                    <div className="h-full rounded-full bg-indigo-600" style={{ width: `${learned.roadmapPercent}%` }} />
+                  </div>
+                </div>
+              )}
 
               {score ? (
                 <div className="mt-4 grid gap-3 md:grid-cols-2">

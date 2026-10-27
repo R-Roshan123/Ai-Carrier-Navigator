@@ -11,6 +11,7 @@ import {
   X,
 } from 'lucide-react';
 import { navItems } from '../data/seedData';
+import FloatingAssistant from '../components/assistant/FloatingAssistant';
 
 const readCurrentUser = () => {
   try {
@@ -112,6 +113,7 @@ export default function AppShell({ children }) {
           <main className="w-full p-4 sm:p-6">{children}</main>
         </div>
       </div>
+      <FloatingAssistant />
     </div>
   );
 }

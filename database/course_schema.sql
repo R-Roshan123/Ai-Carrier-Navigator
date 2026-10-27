@@ -1,5 +1,5 @@
 -- =====================================================================
--- In-app courses: lesson progress and completion certificates.
+-- In-app courses and learning roadmaps: lesson progress, completion certificates, and roadmap topics.
 -- Run AFTER schema.sql (needs the users table). Idempotent: safe to re-run.
 -- Course and lesson ids are slugs from shared/courseContent.js.
 -- =====================================================================
@@ -24,3 +24,12 @@ CREATE TABLE IF NOT EXISTS course_certificates (
 );
 
 CREATE INDEX IF NOT EXISTS idx_course_certificates_user ON course_certificates (user_id);
+
+-- Learning roadmap topics a user has marked complete (topic ids come from shared/roadmaps.js).
+CREATE TABLE IF NOT EXISTS roadmap_topic_progress (
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  role_slug VARCHAR(100) NOT NULL,
+  topic_id VARCHAR(120) NOT NULL,
+  completed_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (user_id, role_slug, topic_id)
+);

@@ -1,6 +1,7 @@
 import { Award, CheckCircle2, Clock, Compass, Hourglass, ListChecks } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ProgressRing from '../../components/ProgressRing';
+import LearningProgressPanel from '../../components/career/LearningProgressPanel';
 import NextStepsPanel from '../../components/career/NextStepsPanel';
 import SkillsChecklist from '../../components/career/SkillsChecklist';
 import StageProgressBar from '../../components/career/StageProgressBar';
@@ -198,6 +199,9 @@ export default function MyCareerProgressPage() {
         )}
       />
 
+      <LearningProgressPanel />
+
+      <h2 className="text-lg font-bold text-slate-900">Target role readiness</h2>
       {summary.error && <ErrorState message={summary.error} onRetry={summary.reload} />}
       {summary.loading && !summary.data && <LoadingState label="Loading your target roles..." />}
 

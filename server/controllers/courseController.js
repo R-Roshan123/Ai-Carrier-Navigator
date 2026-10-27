@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import pool from '../config/db.js';
 import { getCourse, gradeExam } from '../../shared/courseContent.js';
+import { roadmapTopicIds } from '../../shared/roadmaps.js';
 
 const mapCertificate = (row) => ({
   code: row.certificate_code,
@@ -31,18 +32,57 @@ const findCourseOr404 = (req, res) => {
   return course;
 };
 
-// GET /api/courses/progress: completed lessons per course plus earned certificates.
+const groupBy = (rows, key, value) => {
+  const grouped = {};
+  for (const row of rows) (grouped[row[key]] ||= []).push(row[value]);
+  return grouped;
+};
+
+const completedTopics = async (userId, slug) => {
+  const { rows } = await pool.query(
+    'SELECT topic_id FROM roadmap_topic_progress WHERE user_id = $1 AND role_slug = $2',
+    [userId, slug],
+  );
+  return rows.map((row) => row.topic_id);
+};
+
+// GET /api/courses/progress: everything a user has done in courses and learning roadmaps,
+// so every page can show it from one request.
 export const getProgress = async (req, res) => {
-  const [lessons, certificates] = await Promise.all([
+  const [lessons, topics, certificates] = await Promise.all([
     pool.query('SELECT course_slug, lesson_id FROM course_lesson_progress WHERE user_id = $1', [req.user.id]),
+    pool.query('SELECT role_slug, topic_id FROM roadmap_topic_progress WHERE user_id = $1', [req.user.id]),
     pool.query('SELECT * FROM course_certificates WHERE user_id = $1 ORDER BY issued_at DESC', [req.user.id]),
   ]);
 
-  const progress = {};
-  for (const row of lessons.rows) {
-    (progress[row.course_slug] ||= []).push(row.lesson_id);
+  res.json({
+    progress: groupBy(lessons.rows, 'course_slug', 'lesson_id'),
+    roadmap: groupBy(topics.rows, 'role_slug', 'topic_id'),
+    certificates: certificates.rows.map(mapCertificate),
+  });
+};
+
+// PUT /api/courses/:slug/roadmap/:topicId marks a roadmap topic complete; DELETE unmarks it.
+export const setTopicComplete = async (req, res) => {
+  const course = findCourseOr404(req, res);
+  if (!course) return;
+  if (!roadmapTopicIds(course.slug).includes(req.params.topicId)) {
+    return res.status(404).json({ message: 'Roadmap topic not found.' });
   }
-  res.json({ progress, certificates: certificates.rows.map(mapCertificate) });
+
+  if (req.method === 'DELETE') {
+    await pool.query(
+      'DELETE FROM roadmap_topic_progress WHERE user_id = $1 AND role_slug = $2 AND topic_id = $3',
+      [req.user.id, course.slug, req.params.topicId],
+    );
+  } else {
+    await pool.query(
+      `INSERT INTO roadmap_topic_progress (user_id, role_slug, topic_id) VALUES ($1, $2, $3)
+       ON CONFLICT DO NOTHING`,
+      [req.user.id, course.slug, req.params.topicId],
+    );
+  }
+  res.json({ completedTopics: await completedTopics(req.user.id, course.slug) });
 };
 
 // PUT /api/courses/:slug/lessons/:lessonId marks a lesson complete; DELETE unmarks it.
