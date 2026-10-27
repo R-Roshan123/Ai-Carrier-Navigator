@@ -16,6 +16,7 @@ import resumeRoutes from './routes/resumeRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import assessmentRoutes from './routes/assessmentRoutes.js';
+import careerTrackerRoutes from './routes/careerTrackerRoutes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -56,6 +57,7 @@ app.use('/api/resume', resumeRoutes);
 app.use('/api/assessment', assessmentRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/career', careerTrackerRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

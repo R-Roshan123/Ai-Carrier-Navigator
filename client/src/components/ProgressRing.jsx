@@ -1,18 +1,18 @@
-export default function ProgressRing({ value = 78, label = 'Career readiness' }) {
+export default function ProgressRing({ value = 78, label = 'Career readiness', size = 128, color = '#1D4ED8' }) {
   const radius = 52;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference - (value / 100) * circumference;
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="relative h-32 w-32">
-        <svg viewBox="0 0 140 140" className="h-32 w-32 -rotate-90">
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg viewBox="0 0 140 140" className="-rotate-90" style={{ width: size, height: size }} role="img" aria-label={`${label}: ${value} out of 100`}>
           <circle cx="70" cy="70" r={radius} stroke="#E5E7EB" strokeWidth="10" fill="transparent" />
           <circle
             cx="70"
             cy="70"
             r={radius}
-            stroke="#1D4ED8"
+            stroke={color}
             strokeWidth="10"
             strokeLinecap="round"
             fill="transparent"

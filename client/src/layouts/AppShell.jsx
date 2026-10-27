@@ -59,7 +59,7 @@ export default function AppShell({ children }) {
           </div>
 
           <nav className="space-y-1">
-            {navItems.map((item) => (
+            {navItems.filter((item) => !item.adminOnly || currentUser?.role === 'admin').map((item) => (
               <NavLink
                 key={item.label}
                 to={item.path}

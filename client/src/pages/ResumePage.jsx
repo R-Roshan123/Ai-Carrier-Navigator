@@ -1,76 +1,52 @@
 import { useState } from 'react';
 import { Download, FileText, Printer } from 'lucide-react';
-import { careerRecommendations, careerExplorer, profileData, projects, skillGapData } from '../data/seedData';
+import { profileData } from '../data/seedData';
+import { allRoles, findRoleByTitle } from '../data/roleCareerData';
+import { readScores } from '../utils/assessmentScores';
+import { readTargetCareer, saveTargetCareer } from '../utils/targetCareer';
 
-const learnedSkillLevels = {
-  ...Object.fromEntries(skillGapData.map((skill) => [skill.skill, skill.current])),
-  'Data Visualization': 72,
-  'PyTorch': 38,
-  'Model Evaluation': 42,
-  Communication: 78,
-  'Problem Solving': 82,
-};
+// Loose match so profile skills like "Python" count for role skills like "Python & pandas".
+const hasProfileSkill = (skill) =>
+  profileData.skills.technical.some((owned) => skill.toLowerCase().includes(owned.toLowerCase()) || owned.toLowerCase().includes(skill.toLowerCase()));
 
-const roleDetails = {
-  'Data Scientist': {
-    summary: 'Analytical computer science graduate who builds data-driven solutions with Python, SQL, statistics, and machine learning.',
-    skills: ['Python', 'SQL', 'Statistics', 'Machine Learning', 'Data Visualization'],
-    experience: ['Analyzed datasets and built research workflows as a Data Science Intern at BrightLabs.', 'Applied structured problem solving and technical research as a Research Assistant.'],
-    projectKeywords: ['Python', 'Scikit-learn', 'SQL', 'PyTorch'],
-    requirements: { Python: 90, SQL: 80, Statistics: 80, 'Machine Learning': 75, 'Data Visualization': 70 },
-  },
-  'Machine Learning Engineer': {
-    summary: 'Computer science graduate focused on building, evaluating, and improving machine learning systems with Python and modern ML tools.',
-    skills: ['Python', 'Machine Learning', 'SQL', 'PyTorch', 'Model Evaluation'],
-    experience: ['Supported data preparation and model experimentation as a Data Science Intern at BrightLabs.', 'Conducted technical research and translated findings into clear recommendations as a Research Assistant.'],
-    projectKeywords: ['Python', 'Scikit-learn', 'PyTorch', 'SQL'],
-    requirements: { Python: 90, 'Machine Learning': 80, SQL: 70, PyTorch: 65, 'Model Evaluation': 70 },
-  },
-  'Data Analyst': {
-    summary: 'Data-focused computer science graduate who turns business questions into clear analysis using SQL, Python, statistics, and visualization.',
-    skills: ['SQL', 'Python', 'Statistics', 'Data Visualization', 'Problem Solving'],
-    experience: ['Analyzed data and communicated findings as a Data Science Intern at BrightLabs.', 'Used research and problem-solving methods to support evidence-based decisions as a Research Assistant.'],
-    projectKeywords: ['SQL', 'Power BI', 'Python'],
-    requirements: { SQL: 80, Python: 70, Statistics: 70, 'Data Visualization': 75, Communication: 70 },
-  },
-};
-
-const calculateRoleScore = (roleName) => {
-  const role = roleDetails[roleName] || roleDetails['Data Scientist'];
-  const skillEntries = Object.entries(role.requirements);
-  const skillScore = Math.round(skillEntries.reduce((total, [skill, required]) => total + Math.min(100, ((learnedSkillLevels[skill] || 0) / required) * 100), 0) / skillEntries.length);
-  const projectScore = Math.min(100, 70 + projects.filter((project) => project.technologies.some((technology) => role.projectKeywords.includes(technology))).length * 5);
-  const experienceScore = roleName === 'Data Analyst' ? 84 : roleName === 'Data Scientist' ? 78 : 72;
+const calculateRoleScore = (role, score) => {
+  // Assessment results are the best evidence of skill; fall back to the skills listed on the profile.
+  const skillScore = score ? score.last : Math.round((role.skills.filter(hasProfileSkill).length / role.skills.length) * 100);
+  const experienceScore = role.title === 'Data Analyst' ? 84 : role.title === 'Data Scientist' ? 78 : 72;
+  const projectScore = Math.min(100, 70 + role.projects.length * 5);
   const breakdown = { skills: skillScore, experience: experienceScore, projects: projectScore, keywords: Math.max(50, skillScore - 4), formatting: 90 };
   const total = Math.round(Object.values(breakdown).reduce((sum, value) => sum + value, 0) / Object.keys(breakdown).length);
   return { breakdown, total };
 };
 
+const buildExperience = (role) => [
+  `Applied ${role.skills[0]} and ${role.skills[1]} to real-world problems as ${profileData.experience.internships[0]}.`,
+  `Researched and documented ${role.skills[2]} approaches as a ${profileData.experience.workExperience[0]}.`,
+];
+
 export default function ResumePage() {
-  const [selectedRole, setSelectedRole] = useState(localStorage.getItem('targetCareer') || careerRecommendations[0].name);
+  const [selectedRole, setSelectedRole] = useState(() => (findRoleByTitle(readTargetCareer()) || allRoles[0]).title);
   const [generatedResume, setGeneratedResume] = useState(null);
-  const selectedScore = calculateRoleScore(selectedRole);
-  const roleScores = careerRecommendations.map((career) => ({ ...career, score: calculateRoleScore(career.name).total }));
-  const missingSkills = Object.entries((roleDetails[selectedRole] || roleDetails['Data Scientist']).requirements)
-    .filter(([skill, required]) => (learnedSkillLevels[skill] || 0) < required)
-    .sort(([, requiredA], [, requiredB]) => requiredB - requiredA)
-    .slice(0, 3)
-    .map(([skill]) => `${skill} (${learnedSkillLevels[skill] || 0}%)`);
+  const scores = readScores();
+  const role = findRoleByTitle(selectedRole) || allRoles[0];
+  const roleScore = scores[role.slug];
+  const selectedScore = calculateRoleScore(role, roleScore);
+  const roleScores = allRoles.map((item) => ({ ...item, score: calculateRoleScore(item, scores[item.slug]).total }));
+  const missingSkills = roleScore?.weakTopics
+    ? roleScore.weakTopics.slice(0, 3)
+    : role.skills.filter((skill) => !hasProfileSkill(skill)).slice(0, 3);
+  const matchedSkills = role.skills.filter(hasProfileSkill);
 
   const selectRole = (roleName) => {
     setSelectedRole(roleName);
-    localStorage.setItem('targetCareer', roleName);
+    saveTargetCareer(roleName);
   };
 
   const generateResume = () => {
-    const role = roleDetails[selectedRole] || roleDetails['Data Scientist'];
-    const roleMatch = careerExplorer.find((career) => career.name === selectedRole);
-    const matchingProjects = projects.filter((project) => project.technologies.some((technology) => role.projectKeywords.includes(technology))).slice(0, 2);
     setGeneratedResume({
-      role,
-      roleName: selectedRole,
-      requiredEducation: roleMatch?.education || profileData.education.degree,
-      projects: matchingProjects,
+      role: { summary: role.resumeSummary, skills: role.skills, experience: buildExperience(role) },
+      roleName: role.title,
+      projects: role.projects,
     });
   };
 
@@ -83,15 +59,15 @@ export default function ResumePage() {
     <div className="space-y-6">
       <div>
         <div className="text-sm uppercase tracking-[0.2em] text-slate-500">Resume analyzer</div>
-        <h1 className="mt-2 text-3xl font-bold text-slate-900">Resume score for {selectedRole}: {selectedScore.total}/100</h1>
-        <p className="mt-2 text-sm text-slate-600">Scores use the current skill levels from your Skill Gap progress and the requirements of each role.</p>
+        <h1 className="mt-2 text-3xl font-bold text-slate-900">Resume score for {role.title}: {selectedScore.total}/100</h1>
+        <p className="mt-2 text-sm text-slate-600">Skill scores use your latest role assessment, or the skills on your profile if you haven't taken it yet.</p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-3 print:hidden">
+      <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-5 print:hidden">
         {roleScores.map((career) => (
-          <button key={career.name} onClick={() => selectRole(career.name)} className={`rounded-2xl border p-4 text-left transition ${selectedRole === career.name ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 bg-white hover:border-indigo-200'}`}>
+          <button key={career.slug} onClick={() => selectRole(career.title)} className={`rounded-2xl border p-4 text-left transition ${role.title === career.title ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 bg-white hover:border-indigo-200'}`}>
             <div className="flex items-center justify-between gap-3">
-              <span className="font-semibold text-slate-900">{career.name}</span>
+              <span className="font-semibold text-slate-900">{career.title}</span>
               <span className="text-lg font-bold text-indigo-700">{career.score}</span>
             </div>
             <div className="mt-1 text-xs text-slate-500">Role resume score</div>
@@ -102,7 +78,7 @@ export default function ResumePage() {
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm print:hidden">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-lg font-bold text-slate-900">{selectedRole} score breakdown</div>
+            <div className="text-lg font-bold text-slate-900">{role.title} score breakdown</div>
             <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">{selectedScore.total}/100</span>
           </div>
           <div className="mt-5 space-y-4">
@@ -125,7 +101,7 @@ export default function ResumePage() {
               <div>
                 <div className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Strengths</div>
                 <ul className="space-y-2 text-sm text-slate-700">
-                  <li>• {profileData.skills.technical.filter((skill) => (roleDetails[selectedRole] || roleDetails['Data Scientist']).requirements[skill]).join(', ') || 'Technical foundation aligned to the selected role'}</li>
+                  <li>• {(roleScore?.strongTopics?.length ? roleScore.strongTopics : matchedSkills).join(', ') || 'Technical foundation aligned to the selected role'}</li>
                   <li>• {profileData.education.degree} with {profileData.education.department} focus</li>
                 </ul>
               </div>
@@ -139,7 +115,7 @@ export default function ResumePage() {
               <div>
                 <div className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Missing skills</div>
                 <ul className="space-y-2 text-sm text-slate-700">
-                  {missingSkills.map((skill) => <li key={skill}>• {skill}</li>)}
+                  {missingSkills.length ? missingSkills.map((skill) => <li key={skill}>• {skill}</li>) : <li>• None — you cover the core skills for this role</li>}
                 </ul>
               </div>
           </div>
@@ -154,8 +130,8 @@ export default function ResumePage() {
             <p className="mt-2 max-w-2xl text-sm text-slate-600">Choose a target role to keep the resume precise and limited to the experience, skills, education, and projects that support that job.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <select value={selectedRole} onChange={(event) => selectRole(event.target.value)} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700" aria-label="Target role">
-              {careerRecommendations.map((career) => <option key={career.name} value={career.name}>{career.name}</option>)}
+            <select value={role.title} onChange={(event) => selectRole(event.target.value)} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700" aria-label="Target role">
+              {allRoles.map((career) => <option key={career.slug} value={career.title}>{career.title}</option>)}
             </select>
             <button onClick={generateResume} className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white"><FileText className="h-4 w-4" />Generate resume</button>
           </div>

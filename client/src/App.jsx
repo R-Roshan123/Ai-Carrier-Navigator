@@ -18,6 +18,19 @@ import CoursesPage from './pages/CoursesPage';
 import ProjectsPage from './pages/ProjectsPage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
+import AdminRoute from './components/AdminRoute';
+import ExploreRolesPage from './pages/career/ExploreRolesPage';
+import RoleDetailPage from './pages/career/RoleDetailPage';
+import CompaniesPage from './pages/career/CompaniesPage';
+import CompanyDetailPage from './pages/career/CompanyDetailPage';
+import MyCareerProgressPage from './pages/career/MyCareerProgressPage';
+import MyCertificatesPage from './pages/career/MyCertificatesPage';
+import AdminCareerStatsPage from './pages/admin/AdminCareerStatsPage';
+import AdminVerificationPage from './pages/admin/AdminVerificationPage';
+import AdminRolesPage from './pages/admin/AdminRolesPage';
+import AdminRoadmapEditorPage from './pages/admin/AdminRoadmapEditorPage';
+import AdminCompaniesPage from './pages/admin/AdminCompaniesPage';
+import AdminCertificationsPage from './pages/admin/AdminCertificationsPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem('token')));
@@ -59,6 +72,18 @@ function App() {
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/courses" element={<CoursesPage />} />
                   <Route path="/projects" element={<ProjectsPage />} />
+                  <Route path="/career/roles" element={<ExploreRolesPage />} />
+                  <Route path="/career/roles/:slug" element={<RoleDetailPage />} />
+                  <Route path="/career/companies" element={<CompaniesPage />} />
+                  <Route path="/career/companies/:id" element={<CompanyDetailPage />} />
+                  <Route path="/career/progress" element={<MyCareerProgressPage />} />
+                  <Route path="/career/certificates" element={<MyCertificatesPage />} />
+                  <Route path="/admin/career" element={<AdminRoute><AdminCareerStatsPage /></AdminRoute>} />
+                  <Route path="/admin/career/verification" element={<AdminRoute><AdminVerificationPage /></AdminRoute>} />
+                  <Route path="/admin/career/roles" element={<AdminRoute><AdminRolesPage /></AdminRoute>} />
+                  <Route path="/admin/career/roadmaps" element={<AdminRoute><AdminRoadmapEditorPage /></AdminRoute>} />
+                  <Route path="/admin/career/companies" element={<AdminRoute><AdminCompaniesPage /></AdminRoute>} />
+                  <Route path="/admin/career/certifications" element={<AdminRoute><AdminCertificationsPage /></AdminRoute>} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
               </AppShell>

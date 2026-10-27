@@ -8,3 +8,6 @@ client/dist/
 *.log
 npm-debug.log*
 .DS_Store
+
+# Career module certificate uploads
+server/uploads/
