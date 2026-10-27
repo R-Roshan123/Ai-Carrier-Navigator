@@ -163,15 +163,6 @@ export default function DashboardPage() {
               {!jobMatches.length && <p className="text-sm text-slate-600">Take an assessment or start a course to see jobs matched to you.</p>}
               {jobMatches.map(({ job, match }) => (
                 <div key={job.title} className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3.5">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="text-lg font-bold text-slate-900">Recommended jobs</div>
-              <button onClick={() => navigate('/jobs')} className="text-sm font-medium text-indigo-600">View all</button>
-            </div>
-            <div className="space-y-4">
-              {!jobMatches.length && <p className="text-sm text-slate-600">Take an assessment or start a course to see jobs matched to you.</p>}
-              {jobMatches.map(({ job, match }) => (
-                <div key={job.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="font-semibold text-slate-900">{job.title}</div>

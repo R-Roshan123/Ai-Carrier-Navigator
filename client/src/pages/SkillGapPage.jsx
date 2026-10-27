@@ -82,7 +82,7 @@ export default function SkillGapPage() {
                 <div className="rounded-xl bg-slate-50 p-3"><span className="block text-xs text-slate-500">Gap</span> {skill.gap}%</div>
               </div>
               <div className="mt-4 text-sm text-slate-600">
-                <span className="font-semibold text-slate-800">Recommended learning:</span> {skill.gap ? role.courses[0].name : 'On track — keep practising'}
+                <span className="font-semibold text-slate-800">Recommended learning:</span> {skill.gap ? `the free ${role.title} course` : 'On track — keep practising'}
               </div>
             </div>
           ))}

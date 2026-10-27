@@ -1,24 +1,16 @@
-import { useState } from 'react';
 import { Award, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import RoleSelect from '../components/RoleSelect';
 import { InlineAlert } from '../components/career/PageState';
 import { courses as inAppCourses } from '../data/courses';
-import { allRoles } from '../data/roleCareerData';
 import useApiData from '../hooks/useApiData';
 import useSelectedRole from '../hooks/useSelectedRole';
 import { courseApi } from '../services/courseApi';
 
 export default function CoursesPage() {
-  const [started, setStarted] = useState([]);
   const [role, selectRole] = useSelectedRole();
   const progress = useApiData(() => courseApi.getProgress(), []);
   const studyCourses = role ? inAppCourses.filter((course) => course.slug === role.slug) : inAppCourses;
-  const courses = (role ? [role] : allRoles).flatMap((item) => item.courses.map((course) => ({ ...course, role: item.title })));
-
-  const toggleCourse = (name) => {
-    setStarted((current) => current.includes(name) ? current.filter((item) => item !== name) : [...current, name]);
-  };
 
   return (
     <div className="space-y-6">
@@ -26,7 +18,7 @@ export default function CoursesPage() {
         <div>
           <div className="text-sm uppercase tracking-[0.2em] text-slate-500">Learning library</div>
           <h1 className="mt-2 text-3xl font-bold text-slate-900">{role ? `Courses for ${role.title}` : 'Courses'}</h1>
-          <p className="mt-2 text-sm text-slate-600">Study our free courses here and earn a certificate, or explore recommended courses on other platforms.</p>
+          <p className="mt-2 text-sm text-slate-600">Study our free courses, pass the final exam, and earn a certificate.</p>
         </div>
         <RoleSelect role={role} onChange={selectRole} />
       </div>
@@ -57,32 +49,6 @@ export default function CoursesPage() {
                 <Link to={`/courses/${course.slug}`} className="mt-5 inline-flex items-center gap-2 self-start rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white">
                   <BookOpen className="h-4 w-4" /> {certificate ? 'Review course' : done ? 'Continue' : 'Start course'}
                 </Link>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900">More courses on other platforms</h2>
-          <p className="mt-1 text-sm text-slate-600">Durations and pricing are approximate — check the provider for current details.</p>
-        </div>
-        <div className="grid gap-5 xl:grid-cols-3">
-          {courses.map((course) => {
-            const isStarted = started.includes(course.name);
-            return (
-              <article key={course.name} className="flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">{course.level}</span>
-                  <span className="text-xs font-medium text-slate-500">{course.role}</span>
-                </div>
-                <h3 className="mt-4 text-xl font-bold text-slate-900">{course.name}</h3>
-                <p className="mt-2 flex-1 text-sm text-slate-600">{course.reason}</p>
-                <div className="mt-4 text-sm text-slate-500">{course.platform} · {course.duration} · {course.cost}{course.certificate ? ' · Certificate' : ''}</div>
-                <button onClick={() => toggleCourse(course.name)} className={`mt-5 self-start rounded-full px-4 py-2 text-sm font-medium ${isStarted ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-900 text-white'}`}>
-                  {isStarted ? 'In progress' : 'Start course'}
-                </button>
               </article>
             );
           })}

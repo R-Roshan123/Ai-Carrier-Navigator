@@ -1,20 +1,15 @@
 // Per-role learning and job data, layered on top of the role assessments so every page
-// works from the same 15 roles. Course durations are approximate; check the provider for current details.
+// works from the same 15 roles.
 
 import { roleAssessments } from './roleAssessments';
 import { roadmaps } from '../../../shared/roadmaps.js';
 
-const course = (name, platform, level, duration, cost, certificate, reason) => ({ name, platform, level, duration, cost, certificate, reason });
 const project = (name, difficulty, technologies, duration, description, outcome) => ({ name, difficulty, technologies, duration, description, outcome });
 
 const roleCareerData = {
   'software-engineer': {
     tools: ['Git & GitHub', 'VS Code / IntelliJ', 'Docker', 'AWS / GCP', 'Jira'],
     resumeSummary: 'Computer science graduate who designs and builds reliable, well-tested software with a strong foundation in data structures, algorithms, and system design.',
-    courses: [
-      course('CS50x: Introduction to Computer Science', 'Harvard / edX', 'Beginner', '~11 weeks', 'Free', true, 'The best-known foundation in algorithms, memory, and problem solving.'),
-      course('Algorithms Specialization', 'Stanford / Coursera', 'Intermediate', '~4 months', 'Free to audit', true, 'Deepens the algorithm design and analysis that software interviews test.'),
-    ],
     projects: [
       project('URL Shortener Service', 'Intermediate', ['Java', 'Spring Boot', 'Redis', 'PostgreSQL'], '2 weeks', 'Build a short-link service with caching, analytics, and rate limiting.', 'A deployed service with a written design doc covering scaling decisions.'),
       project('Collaborative Task Board', 'Advanced', ['TypeScript', 'Node.js', 'WebSockets', 'Docker'], '4 weeks', 'Real-time task board where multiple users edit the same board at once.', 'Containerized app with tests and a CI pipeline.'),
@@ -24,10 +19,6 @@ const roleCareerData = {
   'software-developer': {
     tools: ['Git & GitHub', 'IntelliJ / Visual Studio', 'Postman', 'Jira', 'JUnit / pytest'],
     resumeSummary: 'Detail-oriented developer who turns requirements into clean, maintainable application code using object-oriented design and agile practices.',
-    courses: [
-      course('Java Programming and Software Engineering Fundamentals', 'Duke University / Coursera', 'Beginner', '~4 months', 'Free to audit', true, 'Builds Java and OOP skills through practical programming exercises.'),
-      course('Introduction to Software Engineering', 'IBM / Coursera', 'Beginner', '~15 hours', 'Free to audit', true, 'Covers the SDLC, agile methods, and how software teams work.'),
-    ],
     projects: [
       project('Library Management System', 'Beginner', ['Java', 'SQL', 'JUnit'], '2 weeks', 'Desktop or console app to manage books, members, and loans.', 'Well-structured OOP codebase with unit tests.'),
       project('Expense Tracker API', 'Intermediate', ['C#', '.NET', 'SQL Server'], '3 weeks', 'REST API with categories, budgets, and monthly reports.', 'Documented API with Postman collection and tests.'),
@@ -37,10 +28,6 @@ const roleCareerData = {
   'web-developer': {
     tools: ['VS Code', 'Chrome DevTools', 'Git & GitHub', 'Figma', 'Netlify / Vercel'],
     resumeSummary: 'Web developer who builds fast, responsive, and accessible websites with semantic HTML, modern CSS, and JavaScript.',
-    courses: [
-      course('Responsive Web Design Certification', 'freeCodeCamp', 'Beginner', '~300 hours', 'Free', true, 'Hands-on HTML and CSS projects that build a responsive portfolio.'),
-      course('The Odin Project: Foundations', 'The Odin Project', 'Beginner', 'Self-paced', 'Free', false, 'Project-based path through HTML, CSS, JavaScript, and Git.'),
-    ],
     projects: [
       project('Personal Portfolio Website', 'Beginner', ['HTML', 'CSS', 'JavaScript'], '1 week', 'Responsive portfolio with projects, contact form, and dark mode.', 'A deployed site scoring 90+ on Lighthouse.'),
       project('Restaurant Landing Page', 'Beginner', ['HTML', 'CSS Grid', 'JavaScript'], '1 week', 'Multi-section landing page with a menu filter and booking form.', 'Pixel-accurate build from a Figma design.'),
@@ -50,10 +37,6 @@ const roleCareerData = {
   'frontend-developer': {
     tools: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Chrome DevTools'],
     resumeSummary: 'Frontend developer who builds polished, accessible user interfaces with React, TypeScript, and modern CSS.',
-    courses: [
-      course('Meta Front-End Developer Professional Certificate', 'Meta / Coursera', 'Beginner', '~7 months', 'Subscription', true, 'Industry-designed path from HTML and CSS to React and UX.'),
-      course('Front End Development Libraries', 'freeCodeCamp', 'Intermediate', '~300 hours', 'Free', true, 'Practice React, Redux, and Bootstrap through certification projects.'),
-    ],
     projects: [
       project('Movie Discovery App', 'Intermediate', ['React', 'TypeScript', 'REST API'], '2 weeks', 'Search and browse films from a public API with filters and favourites.', 'Responsive SPA with loading, error, and empty states.'),
       project('Accessible Component Library', 'Advanced', ['React', 'Storybook', 'Testing Library'], '3 weeks', 'Build buttons, modals, tabs, and forms that meet WCAG guidelines.', 'Published Storybook with keyboard and screen reader tests.'),
@@ -63,10 +46,6 @@ const roleCareerData = {
   'backend-developer': {
     tools: ['Node.js / Java', 'PostgreSQL', 'Redis', 'Docker', 'Postman'],
     resumeSummary: 'Backend developer who designs secure, scalable APIs and data models, with experience in SQL and NoSQL databases, caching, and authentication.',
-    courses: [
-      course('Meta Back-End Developer Professional Certificate', 'Meta / Coursera', 'Beginner', '~8 months', 'Subscription', true, 'Covers Python, Django, APIs, databases, and deployment.'),
-      course('Back End Development and APIs', 'freeCodeCamp', 'Intermediate', '~300 hours', 'Free', true, 'Build Node.js, Express, and MongoDB microservices.'),
-    ],
     projects: [
       project('E-commerce REST API', 'Intermediate', ['Node.js', 'Express', 'PostgreSQL', 'JWT'], '3 weeks', 'Products, carts, orders, and payments with role-based access.', 'Documented API with tests and seed data.'),
       project('Job Queue Notification Service', 'Advanced', ['Node.js', 'Redis', 'RabbitMQ', 'Docker'], '3 weeks', 'Send email and SMS notifications asynchronously with retries.', 'Containerized service with metrics and a dead-letter queue.'),
@@ -76,10 +55,6 @@ const roleCareerData = {
   'full-stack-developer': {
     tools: ['React', 'Node.js & Express', 'PostgreSQL / MongoDB', 'Docker', 'GitHub Actions'],
     resumeSummary: 'Full stack developer who ships features end to end, from React interfaces through Node.js APIs to databases and cloud deployment.',
-    courses: [
-      course('Full Stack Open', 'University of Helsinki', 'Intermediate', 'Self-paced', 'Free', true, 'Deep, modern coverage of React, Node.js, GraphQL, TypeScript, and testing.'),
-      course('IBM Full Stack Software Developer Professional Certificate', 'IBM / Coursera', 'Beginner', '~5 months', 'Subscription', true, 'Broad path covering frontend, backend, cloud, and containers.'),
-    ],
     projects: [
       project('Job Application Tracker', 'Intermediate', ['React', 'Node.js', 'PostgreSQL', 'JWT'], '3 weeks', 'Track applications with statuses, reminders, and notes.', 'Deployed full stack app with authentication.'),
       project('Real-time Chat App', 'Advanced', ['React', 'Socket.IO', 'MongoDB', 'Docker'], '3 weeks', 'Rooms, typing indicators, and message history.', 'Containerized app deployed with CI/CD.'),
@@ -89,10 +64,6 @@ const roleCareerData = {
   'app-developer': {
     tools: ['Flutter / React Native', 'Android Studio', 'Xcode', 'Firebase', 'Figma'],
     resumeSummary: 'App developer who builds cross-platform mobile apps with Flutter and React Native, focusing on smooth UX, offline support, and store-ready releases.',
-    courses: [
-      course('Flutter & Dart: The Complete Guide', 'Udemy', 'Beginner', 'Self-paced video', 'Paid', true, 'Popular hands-on course building real Flutter apps for Android and iOS.'),
-      course('React Native Specialization', 'Meta / Coursera', 'Intermediate', '~5 months', 'Subscription', true, 'Build cross-platform apps with React Native from a JavaScript background.'),
-    ],
     projects: [
       project('Habit Tracker App', 'Beginner', ['Flutter', 'Dart', 'SQLite'], '2 weeks', 'Daily habits with streaks, reminders, and charts.', 'Works fully offline with local notifications.'),
       project('Campus Events App', 'Intermediate', ['React Native', 'Firebase', 'Push Notifications'], '3 weeks', 'Browse, RSVP, and get reminders for college events.', 'Published test build on Android and iOS.'),
@@ -102,10 +73,6 @@ const roleCareerData = {
   'android-developer': {
     tools: ['Android Studio', 'Kotlin', 'Jetpack Compose', 'Firebase', 'Gradle'],
     resumeSummary: 'Android developer who builds native apps in Kotlin with Jetpack Compose, MVVM architecture, Room, and coroutines.',
-    courses: [
-      course('Android Basics with Compose', 'Google for Developers', 'Beginner', 'Self-paced', 'Free', false, 'Google\'s official course for building Android apps with Kotlin and Compose.'),
-      course('Meta Android Developer Professional Certificate', 'Meta / Coursera', 'Beginner', '~8 months', 'Subscription', true, 'Structured path from programming basics to a portfolio-ready Android app.'),
-    ],
     projects: [
       project('Notes App with Room', 'Beginner', ['Kotlin', 'Jetpack Compose', 'Room'], '2 weeks', 'Create, search, and tag notes stored locally.', 'MVVM app with unit tests.'),
       project('Weather Forecast App', 'Intermediate', ['Kotlin', 'Retrofit', 'Coroutines', 'Hilt'], '2 weeks', 'Location-based forecasts from a public weather API.', 'Clean architecture app with offline caching.'),
@@ -115,10 +82,6 @@ const roleCareerData = {
   'ios-developer': {
     tools: ['Xcode', 'Swift', 'SwiftUI', 'TestFlight', 'Instruments'],
     resumeSummary: 'iOS developer who builds native iPhone and iPad apps with Swift and SwiftUI, with attention to performance, memory, and Apple design guidelines.',
-    courses: [
-      course('100 Days of SwiftUI', 'Hacking with Swift', 'Beginner', '100 days', 'Free', false, 'Daily lessons and projects covering Swift and SwiftUI from scratch.'),
-      course('Meta iOS Developer Professional Certificate', 'Meta / Coursera', 'Beginner', '~8 months', 'Subscription', true, 'Structured path to building and publishing iOS apps.'),
-    ],
     projects: [
       project('Expense Splitter App', 'Beginner', ['Swift', 'SwiftUI', 'SwiftData'], '2 weeks', 'Split bills among friends and track who owes what.', 'Polished SwiftUI app following Apple HIG.'),
       project('Photo Journal App', 'Intermediate', ['Swift', 'UIKit', 'Core Data', 'MapKit'], '3 weeks', 'Geotagged photo journal with map view and search.', 'TestFlight build with memory profiling notes.'),
@@ -128,10 +91,6 @@ const roleCareerData = {
   'game-developer': {
     tools: ['Unity', 'Unreal Engine', 'Blender', 'Visual Studio', 'Git LFS'],
     resumeSummary: 'Game developer who builds gameplay systems in Unity and C#, with a solid grasp of game math, physics, and performance optimization.',
-    courses: [
-      course('Unity Junior Programmer Pathway', 'Unity Learn', 'Beginner', 'Self-paced', 'Free', false, 'Unity\'s own path to C# scripting and core gameplay programming.'),
-      course('Game Design and Development with Unity Specialization', 'Michigan State University / Coursera', 'Beginner', '~4 months', 'Free to audit', true, 'Build several complete games while learning design and development.'),
-    ],
     projects: [
       project('2D Platformer', 'Beginner', ['Unity', 'C#', 'Tilemaps'], '3 weeks', 'Three levels with enemies, collectibles, and checkpoints.', 'Playable WebGL build on itch.io.'),
       project('Top-down Shooter with AI', 'Intermediate', ['Unity', 'C#', 'NavMesh', 'Object Pooling'], '4 weeks', 'Wave-based shooter with pathfinding enemies and upgrades.', 'Stable 60 FPS build with a profiling write-up.'),
@@ -141,10 +100,6 @@ const roleCareerData = {
   'ai-engineer': {
     tools: ['Python', 'LLM APIs', 'LangChain / LlamaIndex', 'Vector databases', 'FastAPI'],
     resumeSummary: 'AI engineer who builds LLM-powered applications with retrieval-augmented generation, embeddings, and careful evaluation and safety practices.',
-    courses: [
-      course('Generative AI with Large Language Models', 'DeepLearning.AI & AWS / Coursera', 'Intermediate', '~3 weeks', 'Free to audit', true, 'Explains how LLMs work, fine-tuning, and deployment trade-offs.'),
-      course('ChatGPT Prompt Engineering for Developers', 'DeepLearning.AI', 'Beginner', '~1.5 hours', 'Free', false, 'Short, practical course on prompting LLMs from code.'),
-    ],
     projects: [
       project('Document Q&A Assistant (RAG)', 'Intermediate', ['Python', 'Embeddings', 'pgvector', 'FastAPI'], '3 weeks', 'Upload PDFs and ask questions answered with cited sources.', 'Deployed assistant with an evaluation set and accuracy report.'),
       project('AI Support Agent with Tools', 'Advanced', ['Python', 'LLM tool calling', 'Redis', 'Docker'], '4 weeks', 'Agent that looks up orders and drafts replies with guardrails.', 'Agent with logged traces and prompt-injection tests.'),
@@ -154,10 +109,6 @@ const roleCareerData = {
   'ml-engineer': {
     tools: ['Python', 'scikit-learn', 'PyTorch / TensorFlow', 'MLflow', 'Docker'],
     resumeSummary: 'Machine learning engineer who trains, evaluates, and deploys models, with experience in feature engineering, experiment tracking, and MLOps.',
-    courses: [
-      course('Machine Learning Specialization', 'Stanford & DeepLearning.AI / Coursera', 'Beginner', '~3 months', 'Free to audit', true, 'Andrew Ng\'s updated foundation in supervised and unsupervised learning.'),
-      course('Deep Learning Specialization', 'DeepLearning.AI / Coursera', 'Intermediate', '~4 months', 'Free to audit', true, 'Neural networks, CNNs, sequence models, and practical tuning.'),
-    ],
     projects: [
       project('Customer Churn Prediction', 'Intermediate', ['Python', 'scikit-learn', 'XGBoost', 'SQL'], '3 weeks', 'Predict churn from customer behaviour and explain key drivers.', 'Model with SHAP explanations and a business summary.'),
       project('Image Classifier with Model Serving', 'Advanced', ['PyTorch', 'FastAPI', 'MLflow', 'Docker'], '4 weeks', 'Train an image classifier and serve it behind an API.', 'Tracked experiments and a containerized inference service.'),
@@ -167,10 +118,6 @@ const roleCareerData = {
   'data-scientist': {
     tools: ['Python & pandas', 'Jupyter', 'scikit-learn', 'SQL', 'Tableau'],
     resumeSummary: 'Data scientist who turns complex data into insights and predictive models using statistics, Python, SQL, and clear storytelling.',
-    courses: [
-      course('IBM Data Science Professional Certificate', 'IBM / Coursera', 'Beginner', '~5 months', 'Subscription', true, 'Covers Python, SQL, data analysis, visualization, and machine learning.'),
-      course('Statistics with Python Specialization', 'University of Michigan / Coursera', 'Intermediate', '~3 months', 'Free to audit', true, 'Builds the statistical inference skills data science relies on.'),
-    ],
     projects: [
       project('A/B Test Analysis', 'Intermediate', ['Python', 'SciPy', 'pandas'], '2 weeks', 'Analyze a website experiment and recommend a launch decision.', 'Notebook with statistical tests and an executive summary.'),
       project('Sales Forecasting', 'Intermediate', ['Python', 'Prophet', 'SQL', 'Tableau'], '3 weeks', 'Forecast monthly sales and highlight seasonal trends.', 'Forecast dashboard with accuracy metrics.'),
@@ -180,10 +127,6 @@ const roleCareerData = {
   'data-analyst': {
     tools: ['SQL', 'Excel', 'Power BI', 'Tableau', 'Python'],
     resumeSummary: 'Data analyst who answers business questions with SQL, Excel, and Power BI, and communicates findings through clear dashboards and reports.',
-    courses: [
-      course('Google Data Analytics Professional Certificate', 'Google / Coursera', 'Beginner', '~6 months', 'Subscription', true, 'Covers spreadsheets, SQL, Tableau, and R with a capstone case study.'),
-      course('Microsoft Power BI Data Analyst Professional Certificate', 'Microsoft / Coursera', 'Beginner', '~5 months', 'Subscription', true, 'Prepares you for Power BI dashboards and the PL-300 exam.'),
-    ],
     projects: [
       project('Sales Performance Dashboard', 'Beginner', ['Power BI', 'SQL', 'Excel'], '2 weeks', 'Track revenue, margin, and regional performance against targets.', 'Interactive dashboard with KPI definitions.'),
       project('Customer Segmentation Analysis', 'Intermediate', ['SQL', 'Python', 'Tableau'], '2 weeks', 'Segment customers by recency, frequency, and spend (RFM).', 'Report with segment profiles and marketing recommendations.'),
@@ -193,10 +136,6 @@ const roleCareerData = {
   'data-engineer': {
     tools: ['SQL', 'Python', 'Apache Spark', 'Apache Airflow', 'Snowflake / BigQuery'],
     resumeSummary: 'Data engineer who builds reliable batch and streaming pipelines, data warehouses, and orchestration with SQL, Python, Spark, and Airflow.',
-    courses: [
-      course('Data Engineering Zoomcamp', 'DataTalks.Club', 'Intermediate', 'Self-paced or cohort', 'Free', true, 'Hands-on course covering Docker, Terraform, warehousing, Spark, and Kafka.'),
-      course('IBM Data Engineering Professional Certificate', 'IBM / Coursera', 'Beginner', '~6 months', 'Subscription', true, 'Broad foundation in databases, ETL, big data, and pipelines.'),
-    ],
     projects: [
       project('End-to-end ELT Pipeline', 'Intermediate', ['Python', 'Airflow', 'dbt', 'BigQuery'], '3 weeks', 'Ingest public data daily, model it with dbt, and serve a dashboard.', 'Scheduled pipeline with tests and documentation.'),
       project('Real-time Clickstream Processing', 'Advanced', ['Kafka', 'Spark Streaming', 'Parquet', 'Docker'], '4 weeks', 'Process simulated website events into live aggregates.', 'Streaming pipeline with a latency and throughput report.'),
