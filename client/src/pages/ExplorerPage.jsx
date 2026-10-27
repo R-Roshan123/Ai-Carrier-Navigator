@@ -1,13 +1,26 @@
 import { useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { careerExplorer } from '../data/seedData';
+import { allRoles } from '../data/roleCareerData';
+
+// Assessed roles first, then the other careers that don't have an assessment yet.
+const careers = [
+  ...allRoles.map((role) => ({ ...role, name: role.title })),
+  ...careerExplorer.filter((career) => !allRoles.some((role) => role.title === career.name)),
+];
 
 export default function ExplorerPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('search') || '');
   const [selectedCareer, setSelectedCareer] = useState(null);
-  const filteredCareers = useMemo(() => careerExplorer.filter((career) => `${career.name} ${career.category} ${career.skills.join(' ')}`.toLowerCase().includes(query.toLowerCase())), [query]);
+  const filteredCareers = useMemo(() => careers.filter((career) => `${career.name} ${career.category} ${career.skills.join(' ')}`.toLowerCase().includes(query.toLowerCase())), [query]);
+
+  const viewDetails = (career) => {
+    setSelectedCareer(career);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="space-y-6">
@@ -24,26 +37,48 @@ export default function ExplorerPage() {
         </div>
       </div>
 
+      {selectedCareer && (
+        <div className="rounded-3xl border border-indigo-200 bg-indigo-50 p-5">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-2 text-sm text-slate-600">
+              <h2 className="text-xl font-bold text-slate-900">{selectedCareer.name}</h2>
+              <p className="text-slate-700">{selectedCareer.overview}</p>
+              <p>Salary: {selectedCareer.salary}</p>
+              <p>Education: {selectedCareer.education}</p>
+              {selectedCareer.difficulty && <p>Difficulty: {selectedCareer.difficulty} · Growth: {selectedCareer.growth}</p>}
+              <p>Skills: {selectedCareer.skills.join(', ')}</p>
+              <p>Tools: {selectedCareer.tools.join(', ')}</p>
+              {selectedCareer.slug && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <button onClick={() => navigate(`/assessment?role=${selectedCareer.slug}`)} className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Take assessment</button>
+                  <button onClick={() => navigate(`/roadmap?role=${selectedCareer.slug}`)} className="rounded-full border border-indigo-200 bg-white px-4 py-2 text-sm font-medium text-indigo-700">View roadmap</button>
+                </div>
+              )}
+            </div>
+            <button onClick={() => setSelectedCareer(null)} className="text-sm font-medium text-indigo-700">Close</button>
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {filteredCareers.map((career) => (
-          <div key={career.id} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
+          <div key={career.name} className="flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between gap-3">
               <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">{career.category}</span>
               <span className="text-sm font-medium text-slate-500">{career.salary}</span>
             </div>
             <h2 className="text-xl font-bold text-slate-900">{career.name}</h2>
-            <p className="mt-2 text-sm text-slate-600">{career.overview}</p>
+            <p className="mt-2 flex-1 text-sm text-slate-600">{career.overview}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {career.skills.slice(0, 3).map((skill) => (
                 <span key={skill} className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">{skill}</span>
               ))}
             </div>
-            <button onClick={() => setSelectedCareer(career)} className="mt-5 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white">View Details</button>
+            <button onClick={() => viewDetails(career)} className="mt-5 self-start rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white">View Details</button>
           </div>
         ))}
       </div>
       {!filteredCareers.length && <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-600">No careers match “{query}”.</div>}
-      {selectedCareer && <div className="rounded-3xl border border-indigo-200 bg-indigo-50 p-5"><div className="flex items-start justify-between gap-4"><div><h2 className="text-xl font-bold text-slate-900">{selectedCareer.name}</h2><p className="mt-2 text-sm text-slate-700">{selectedCareer.overview}</p><p className="mt-2 text-sm text-slate-600">Education: {selectedCareer.education}</p><p className="mt-2 text-sm text-slate-600">Tools: {selectedCareer.tools.join(', ')}</p></div><button onClick={() => setSelectedCareer(null)} className="text-sm font-medium text-indigo-700">Close</button></div></div>}
     </div>
   );
 }

@@ -2,7 +2,9 @@ import { ArrowUpRight, BookOpen, Briefcase, Sparkles, Star } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import StatCard from '../components/StatCard';
 import ProgressRing from '../components/ProgressRing';
-import { careerRecommendations, dashboardInsight, jobs } from '../data/seedData';
+import { dashboardInsight } from '../data/seedData';
+import { allRoles } from '../data/roleCareerData';
+import { readScores } from '../utils/assessmentScores';
 import { useNavigate } from 'react-router-dom';
 
 const chartData = [
@@ -26,6 +28,13 @@ const getCurrentUserName = () => {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const userName = getCurrentUserName();
+  const scores = readScores();
+  // Top roles by assessment score; unassessed roles fill the list in catalogue order.
+  const topRoles = allRoles
+    .map((role, index) => ({ ...role, score: scores[role.slug], index }))
+    .sort((a, b) => (b.score?.best ?? -1) - (a.score?.best ?? -1) || a.index - b.index)
+    .slice(0, 3);
+  const bestMatch = topRoles[0].score?.best;
 
   return (
     <div className="space-y-6">
@@ -41,7 +50,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Career match" value="92%" change="+6%" icon={Sparkles} />
+        <StatCard label="Career match" value={bestMatch === undefined ? '—' : `${bestMatch}%`} change={bestMatch === undefined ? 'Take an assessment' : topRoles[0].title} icon={Sparkles} />
         <StatCard label="Career readiness" value="78/100" change="+4%" icon={Star} />
         <StatCard label="Skill progress" value="73%" change="+9%" icon={BookOpen} />
         <StatCard label="Applications" value="12" change="+3" icon={Briefcase} />
@@ -93,16 +102,16 @@ export default function DashboardPage() {
             <button onClick={() => navigate('/recommendations')} className="text-sm font-medium text-indigo-600">View all</button>
           </div>
           <div className="space-y-4">
-            {careerRecommendations.map((career) => (
-              <div key={career.name} className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between">
+            {topRoles.map((career) => (
+              <div key={career.slug} className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-semibold text-slate-900">{career.name}</h3>
-                    <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">{career.match}%</span>
+                    <h3 className="text-lg font-semibold text-slate-900">{career.title}</h3>
+                    <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">{career.score ? `${career.score.best}%` : 'Not assessed'}</span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-600">{career.reason}</p>
+                  <p className="mt-1 text-sm text-slate-600">{career.overview}</p>
                 </div>
-                <button onClick={() => navigate('/recommendations')} className="rounded-full bg-slate-900 px-3 py-1.5 text-sm font-medium text-white">View career</button>
+                <button onClick={() => navigate(career.score ? '/recommendations' : `/assessment?role=${career.slug}`)} className="shrink-0 rounded-full bg-slate-900 px-3 py-1.5 text-sm font-medium text-white">{career.score ? 'View career' : 'Take assessment'}</button>
               </div>
             ))}
           </div>
@@ -117,14 +126,14 @@ export default function DashboardPage() {
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="mb-4 text-lg font-bold text-slate-900">Recommended jobs</div>
             <div className="space-y-4">
-              {jobs.slice(0, 2).map((job) => (
+              {topRoles.slice(0, 2).map(({ job, score }) => (
                 <div key={job.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="font-semibold text-slate-900">{job.title}</div>
                       <div className="text-sm text-slate-500">{job.company}</div>
                     </div>
-                    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">{job.match}%</span>
+                    {score && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">{score.best}%</span>}
                   </div>
                 </div>
               ))}
