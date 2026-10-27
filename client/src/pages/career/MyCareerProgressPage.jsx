@@ -12,7 +12,7 @@ import useApiData from '../../hooks/useApiData';
 import { careerApi } from '../../services/careerApi';
 import { formatDate, formatHours, formatWeeks } from '../../utils/careerFormat';
 
-const readinessColor = (value) => (value >= 75 ? '#059669' : value >= 40 ? '#2563EB' : '#64748B');
+const readinessColor = (value) => (value >= 75 ? '#171717' : value >= 40 ? '#666666' : '#999999');
 
 function ListSection({ title, emptyText, children, count }) {
   return (

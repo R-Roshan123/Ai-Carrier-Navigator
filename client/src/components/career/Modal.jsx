@@ -30,14 +30,14 @@ export default function Modal({ open, title, onClose, children, footer, size = '
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-0 backdrop-blur-sm sm:items-center sm:p-4" onMouseDown={(event) => event.target === event.currentTarget && onClose?.()}>
+    <div className="app-modal-backdrop fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-0 backdrop-blur-sm sm:items-center sm:p-4" onMouseDown={(event) => event.target === event.currentTarget && onClose?.()}>
       <div
         ref={panelRef}
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`flex max-h-[92vh] w-full ${SIZES[size]} flex-col rounded-t-3xl bg-white shadow-xl outline-none sm:rounded-3xl`}
+        className={`app-modal-panel flex max-h-[92vh] w-full ${SIZES[size]} flex-col rounded-t-3xl bg-white shadow-xl outline-none sm:rounded-3xl`}
       >
         <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4">
           <h2 className="text-lg font-bold text-slate-900">{title}</h2>

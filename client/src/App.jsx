@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AppShell from './layouts/AppShell';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
@@ -34,10 +34,71 @@ import AdminRoadmapEditorPage from './pages/admin/AdminRoadmapEditorPage';
 import AdminCompaniesPage from './pages/admin/AdminCompaniesPage';
 import AdminCertificationsPage from './pages/admin/AdminCertificationsPage';
 
+function CyberTextEntrance({ children }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    const page = document.querySelector('.app-theme-root');
+    if (!page || typeof document.createTreeWalker !== 'function') return undefined;
+
+    const walker = document.createTreeWalker(page, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent || !node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+        if (parent.closest('svg, script, style, textarea, input, select, .cyber-word-pop')) return NodeFilter.FILTER_REJECT;
+        const block = parent.closest('h1, h2, h3, p');
+        if (!block) return NodeFilter.FILTER_REJECT;
+        if (block.matches('p') && block.textContent.trim().length > 140) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    const wordCounts = new Map();
+    textNodes.forEach((node) => {
+      const block = node.parentElement.closest('h1, h2, h3, p');
+      const count = node.textContent.trim().split(/\s+/).length;
+      wordCounts.set(block, (wordCounts.get(block) || 0) + count);
+    });
+
+    const wordIndexes = new Map();
+    textNodes.forEach((node) => {
+      const block = node.parentElement.closest('h1, h2, h3, p');
+      const fragment = document.createDocumentFragment();
+      node.textContent.split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          fragment.append(document.createTextNode(part));
+          return;
+        }
+
+        const word = document.createElement('span');
+        const index = wordIndexes.get(block) || 0;
+        word.className = 'cyber-word-pop';
+        word.style.setProperty('--word-index', index);
+        if (index === wordCounts.get(block) - 1) word.dataset.finalWord = 'true';
+        word.textContent = part;
+        wordIndexes.set(block, index + 1);
+        fragment.append(word);
+      });
+      node.replaceWith(fragment);
+    });
+
+    return () => {
+      page.querySelectorAll('.cyber-word-pop').forEach((word) => word.replaceWith(document.createTextNode(word.textContent)));
+      page.normalize();
+    };
+  }, [location.pathname]);
+
+  return children;
+}
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem('token')));
 
   useEffect(() => {
+    document.documentElement.dataset.colorMode = localStorage.getItem('app-color-mode') === 'dark' ? 'dark' : 'light';
     const updateAuthState = () => setIsAuthenticated(Boolean(localStorage.getItem('token')));
     window.addEventListener('storage', updateAuthState);
     window.addEventListener('auth-changed', updateAuthState);
@@ -49,6 +110,8 @@ function App() {
 
   return (
     <BrowserRouter>
+      <div className="cyber-theme app-theme-root">
+      <CyberTextEntrance>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/landing" element={<Navigate to="/" replace />} />
@@ -99,6 +162,8 @@ function App() {
           }
         />
       </Routes>
+      </CyberTextEntrance>
+      </div>
     </BrowserRouter>
   );
 }

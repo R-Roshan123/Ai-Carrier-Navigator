@@ -53,22 +53,31 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 text-white shadow-xl shadow-slate-950/10 sm:px-8 sm:py-8">
-        <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-indigo-500/30 blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 h-40 w-40 rounded-full bg-violet-400/10 blur-2xl" />
-        <div className="relative flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-semibold text-indigo-100"><Sparkles className="h-3.5 w-3.5" /> YOUR CAREER WORKSPACE</div>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Good evening, {userName}.</h1>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">You are making great progress. One focused session today will keep your career plan on track.</p>
-          </div>
-          <button onClick={() => navigate('/assessment')} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition hover:bg-indigo-50">
-            Continue assessment <ArrowUpRight className="h-4 w-4" />
+      <div className="dashboard-hero">
+        <div className="dashboard-hero-grid" aria-hidden="true" />
+        <div className="dashboard-hero-copy">
+          <div className="dashboard-kicker"><span className="dashboard-live-dot" /> CAREER JOURNEY / OVERVIEW</div>
+          <h1>Make your next move <em>count.</em></h1>
+          <p>Welcome back, {userName}. Your next step is waiting. Keep your momentum and turn today’s effort into tomorrow’s opportunity.</p>
+          <button onClick={() => navigate('/assessment')} className="dashboard-hero-cta">
+            Continue your journey <ArrowUpRight className="h-4 w-4" />
           </button>
+          <div className="dashboard-hero-footnote"><span>01</span><span className="dashboard-footnote-rule" /> YOUR PERSONAL CAREER SYSTEM</div>
+        </div>
+        <div className="career-orbit" aria-label="Your career path from insight to opportunity">
+          <svg className="career-orbit-path" viewBox="0 0 420 320" fill="none" aria-hidden="true">
+            <path d="M54 252C92 239 93 178 157 178C222 178 201 93 273 93C323 93 314 53 367 47" stroke="url(#careerPathGradient)" strokeWidth="2" strokeDasharray="5 8" />
+            <defs><linearGradient id="careerPathGradient" x1="54" y1="252" x2="367" y2="47" gradientUnits="userSpaceOnUse"><stop stopColor="#FFFFFF" /><stop offset="1" stopColor="#888888" /></linearGradient></defs>
+          </svg>
+          <div className="orbit-node orbit-node-one"><span className="orbit-node-icon">01</span><span><small>DISCOVER</small><strong>Your strengths</strong></span></div>
+          <div className="orbit-node orbit-node-two"><span className="orbit-node-icon">02</span><span><small>BUILD</small><strong>New skills</strong></span></div>
+          <div className="orbit-node orbit-node-three"><span className="orbit-node-icon">03</span><span><small>MOVE</small><strong>With confidence</strong></span></div>
+          <div className="orbit-center"><Sparkles className="h-5 w-5" /><span>YOUR<br />NEXT CHAPTER</span></div>
+          <div className="orbit-caption"><span className="orbit-caption-pulse" /> PLAN ACTIVE <b>↗</b></div>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="dashboard-stats grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Career match" value={bestMatch === undefined ? '—' : `${bestMatch}%`} change={bestMatch === undefined ? 'Take an assessment' : topRoles[0].title} icon={Sparkles} />
         <StatCard label="Career readiness" value="78/100" change="+4%" icon={Star} />
         <StatCard label="Roadmap progress" value={focusStarted ? `${focus.summary.roadmapPercent}%` : '—'} change={focusStarted ? focus.role.title : 'Start a roadmap'} icon={BookOpen} />
@@ -89,15 +98,15 @@ export default function DashboardPage() {
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.05} />
+                    <stop offset="5%" stopColor="#171717" stopOpacity={0.14} />
+                    <stop offset="95%" stopColor="#171717" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#E2E8F0" vertical={false} />
-                <XAxis dataKey="name" tickLine={false} axisLine={false} stroke="#64748B" />
-                <YAxis tickLine={false} axisLine={false} stroke="#64748B" />
+                <CartesianGrid stroke="#dedede" vertical={false} />
+                <XAxis dataKey="name" tickLine={false} axisLine={false} stroke="#888888" />
+                <YAxis tickLine={false} axisLine={false} stroke="#888888" />
                 <Tooltip />
-                <Area type="monotone" dataKey="score" stroke="#4F46E5" fill="url(#colorScore)" strokeWidth={3} />
+                <Area type="monotone" dataKey="score" stroke="#171717" fill="url(#colorScore)" strokeWidth={3} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -157,11 +166,6 @@ export default function DashboardPage() {
               {!jobMatches.length && <p className="text-sm text-slate-600">Take an assessment or start a course to see jobs matched to you.</p>}
               {jobMatches.map(({ job, match }) => (
                 <div key={job.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.03)] sm:p-6">
-            <div className="mb-4 flex items-center justify-between"><div className="text-lg font-bold text-slate-900">Recommended jobs</div><button onClick={() => navigate('/jobs')} className="text-xs font-semibold text-indigo-600">See jobs</button></div>
-            <div className="space-y-4">
-              {topRoles.slice(0, 2).map(({ job, score }) => (
-                <div key={job.title} className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3.5">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="font-semibold text-slate-900">{job.title}</div>

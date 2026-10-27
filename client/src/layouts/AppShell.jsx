@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   BookOpen,
@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import { navItems } from '../data/seedData';
 import FloatingAssistant from '../components/assistant/FloatingAssistant';
+import ColorModeToggle from '../components/ColorModeToggle';
+import ExperimentalNavigation from '../components/ExperimentalNavigation';
 
 const readCurrentUser = () => {
   try {
@@ -60,17 +62,47 @@ const navigationIcons = {
 
 export default function AppShell({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const touchStart = useRef(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [navMapOpen, setNavMapOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(readCurrentUser);
   const navigate = useNavigate();
   const location = useLocation();
+  const currentPage = navItems.find((item) => item.path === location.pathname)?.label ||
+    location.pathname.split('/').filter(Boolean).pop()?.replaceAll('-', ' ') || 'Workspace';
 
   useEffect(() => {
     const updateUser = () => setCurrentUser(readCurrentUser());
-    document.documentElement.dataset.theme = localStorage.getItem('app-theme') || 'light';
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.removeItem('app-theme');
     window.addEventListener('auth-changed', updateUser);
     return () => window.removeEventListener('auth-changed', updateUser);
   }, []);
+
+  useEffect(() => {
+    const onTouchStart = (event) => {
+      if (window.innerWidth > 1024 || event.changedTouches.length !== 1) return;
+      const touch = event.changedTouches[0];
+      touchStart.current = { x: touch.clientX, y: touch.clientY, wasOpen: mobileOpen };
+    };
+    const onTouchEnd = (event) => {
+      const start = touchStart.current;
+      touchStart.current = null;
+      if (!start || event.changedTouches.length !== 1) return;
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - start.x;
+      const deltaY = Math.abs(touch.clientY - start.y);
+      if (deltaY > 70 || Math.abs(deltaX) < 64) return;
+      if (!start.wasOpen && start.x <= 28 && deltaX > 0) setMobileOpen(true);
+      if (start.wasOpen && deltaX < 0) setMobileOpen(false);
+    };
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [mobileOpen]);
 
   useEffect(() => {
     const main = document.querySelector('.workspace-main');
@@ -95,49 +127,6 @@ export default function AppShell({ children }) {
     return () => observer.disconnect();
   }, [location.pathname]);
 
-  useEffect(() => {
-    const page = document.querySelector('.route-transition');
-    if (!page || typeof document.createTreeWalker !== 'function') return undefined;
-
-    const walker = document.createTreeWalker(page, NodeFilter.SHOW_TEXT, {
-      acceptNode(node) {
-        const parent = node.parentElement;
-        if (!parent || !node.textContent.trim()) return NodeFilter.FILTER_REJECT;
-        if (parent.closest('svg, script, style, textarea, input, select, .word-pop')) return NodeFilter.FILTER_REJECT;
-        if (!parent.closest('h1, h2')) return NodeFilter.FILTER_REJECT;
-        return NodeFilter.FILTER_ACCEPT;
-      },
-    });
-    const textNodes = [];
-    while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-    const headingWordIndexes = new WeakMap();
-    textNodes.forEach((node) => {
-      const fragment = document.createDocumentFragment();
-      const heading = node.parentElement.closest('h1, h2');
-      node.textContent.split(/(\s+)/).forEach((part) => {
-        if (!part) return;
-        if (/^\s+$/.test(part)) {
-          fragment.append(document.createTextNode(part));
-          return;
-        }
-        const word = document.createElement('span');
-        word.className = 'word-pop';
-        const wordIndex = headingWordIndexes.get(heading) || 0;
-        word.style.setProperty('--word-index', wordIndex);
-        word.textContent = part;
-        headingWordIndexes.set(heading, wordIndex + 1);
-        fragment.append(word);
-      });
-      node.replaceWith(fragment);
-    });
-
-    return () => {
-      page.querySelectorAll('.word-pop').forEach((word) => word.replaceWith(document.createTextNode(word.textContent)));
-      page.normalize();
-    };
-  }, [location.pathname]);
-
   const userInitial = (currentUser?.name || 'U').slice(0, 1).toUpperCase();
 
   const handleLogout = () => {
@@ -148,13 +137,13 @@ export default function AppShell({ children }) {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f5f4f0] text-slate-900">
+    <div className="cyber-theme app-shell-root min-h-screen w-full bg-[#f2f5f9] text-slate-900">
       <div className="flex min-h-screen">
         {mobileOpen && <button className="fixed inset-0 z-30 bg-slate-950/30 lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close navigation overlay" />}
-        <aside className={`${mobileOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 flex w-[17.5rem] flex-col border-r border-slate-800 bg-slate-950 p-4 shadow-2xl transition-transform duration-300 lg:static lg:translate-x-0 lg:shadow-none`}>
+        <aside className={`workspace-sidebar ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 flex w-[17.5rem] flex-col border-r border-slate-800 bg-slate-950 p-4 shadow-2xl transition-transform duration-300 lg:static lg:translate-x-0 lg:shadow-none`}>
           <div className="mb-10 flex items-center justify-between px-2 pt-2">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime-300 text-slate-950 shadow-lg shadow-lime-300/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-400 text-slate-950 shadow-lg shadow-orange-300/20">
                 <Sparkles className="h-5 w-5" />
               </div>
               <div>
@@ -178,9 +167,9 @@ export default function AppShell({ children }) {
                 to={item.path}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                  `workspace-nav-link flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
                     isActive
-                      ? 'bg-white/10 text-lime-200 ring-1 ring-inset ring-white/10'
+                      ? 'bg-white/10 text-cyan-200 ring-1 ring-inset ring-white/10'
                       : 'text-slate-400 hover:bg-white/5 hover:text-white'
                   }`
                 }
@@ -194,20 +183,28 @@ export default function AppShell({ children }) {
           <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <div className="text-xs font-semibold text-slate-200">Your next step</div>
             <p className="mt-1 text-xs leading-5 text-slate-400">Complete your career assessment to personalise your plan.</p>
-            <button onClick={() => navigate('/assessment')} className="mt-3 text-xs font-semibold text-lime-300 hover:text-lime-200">Continue assessment →</button>
+            <button onClick={() => navigate('/assessment')} className="mt-3 text-xs font-semibold text-orange-300 hover:text-orange-200">Continue assessment →</button>
           </div>
         </aside>
 
         <div className="min-w-0 flex-1">
-          <header className="sticky top-0 z-30 border-b border-black/[0.06] bg-[#f5f4f0]/90 backdrop-blur-xl">
+          <header className="workspace-topbar sticky top-0 z-30 border-b border-black/[0.06] bg-[#f2f5f9]/90 backdrop-blur-xl">
             <div className="flex items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
               <div className="flex items-center gap-3">
                 <button className="lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
                   <Menu className="h-5 w-5 text-slate-700" />
                 </button>
+                <button type="button" className="nav-map-trigger" onClick={() => setNavMapOpen(true)} aria-label="Open navigation map" title="Explore navigation">
+                  <Compass size={18} /><span>Explore</span>
+                </button>
+                <div className="topbar-breadcrumb">
+                  <span>CAREERPILOT <b>/</b> WORKSPACE</span>
+                  <strong>{currentPage}</strong>
+                </div>
               </div>
 
               <div className="flex items-center gap-3">
+<ColorModeToggle />
                 <button onClick={() => setProfileOpen((open) => !open)} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-left shadow-sm transition hover:border-indigo-200" aria-label="Open account menu" aria-expanded={profileOpen}>
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-xs font-bold text-indigo-700">{userInitial}</span>
                   <div className="hidden text-left sm:block">
@@ -218,7 +215,21 @@ export default function AppShell({ children }) {
                 </button>
               </div>
             </div>
-            {profileOpen && <div className="absolute right-4 top-[4.5rem] w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-950/10"><div className="border-b border-slate-100 px-3 py-3"><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-sm font-bold text-indigo-700">{userInitial}</span><div><div className="text-sm font-semibold text-slate-900">{currentUser?.name || 'User'}</div><div className="mt-0.5 max-w-44 truncate text-xs text-slate-500">{currentUser?.email || currentUser?.department || 'Career workspace'}</div></div></div></div><button onClick={() => { setProfileOpen(false); navigate('/profile'); }} className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"><UserRound className="h-4 w-4 text-slate-500" />View profile</button><button onClick={() => { setProfileOpen(false); navigate('/settings'); }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"><Settings className="h-4 w-4 text-slate-500" />Account settings</button><div className="my-1 border-t border-slate-100" /><button onClick={handleLogout} className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"><LogOut className="h-4 w-4" />Log out</button></div>}
+            {profileOpen && (
+              <div className="account-dropdown absolute right-4 top-[4.5rem] z-[80] w-72 rounded-xl border p-2" role="group" aria-label="Account menu">
+                <div className="account-dropdown-header flex items-center gap-3 px-3 py-3">
+                  <span className="account-avatar flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold">{userInitial}</span>
+                  <div className="min-w-0">
+                    <div className="account-dropdown-name truncate text-sm font-semibold">{currentUser?.name || 'User'}</div>
+                    <div className="account-dropdown-detail mt-0.5 max-w-44 truncate text-xs">{currentUser?.email || currentUser?.department || 'Career workspace'}</div>
+                  </div>
+                </div>
+                <button onClick={() => { setProfileOpen(false); navigate('/profile'); }} className="account-dropdown-action mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition"><UserRound className="h-4 w-4" />View profile</button>
+                <button onClick={() => { setProfileOpen(false); navigate('/settings'); }} className="account-dropdown-action flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition"><Settings className="h-4 w-4" />Account settings</button>
+                <div className="account-dropdown-divider my-1 border-t" />
+                <button onClick={handleLogout} className="account-dropdown-logout flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition"><LogOut className="h-4 w-4" />Log out</button>
+              </div>
+            )}
           </header>
 
           <main className="workspace-main mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
@@ -227,6 +238,7 @@ export default function AppShell({ children }) {
         </div>
       </div>
       <FloatingAssistant />
+      {navMapOpen && <ExperimentalNavigation onClose={() => setNavMapOpen(false)} currentUser={currentUser} />}
     </div>
   );
 }

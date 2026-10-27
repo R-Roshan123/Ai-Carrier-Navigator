@@ -204,7 +204,7 @@ export default function MyCertificatesPage() {
         actions={(
           <button
             onClick={() => setModal({ open: true, certificate: null, certificationId: null })}
-            className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+            className="certificate-upload-trigger inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
           >
             <Upload className="h-4 w-4" /> Upload certificate
           </button>
