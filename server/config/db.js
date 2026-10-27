@@ -16,7 +16,22 @@ export const sslConfig =
     ? { rejectUnauthorized: false }
     : false;
 
-const pool = new Pool({ connectionString, ssl: sslConfig, max: 20 });
+// Hosted databases (e.g. Supabase) drop idle connections, so keep them alive, recycle idle
+// ones before the server does, and fail fast instead of hanging when the database is unreachable.
+const pool = new Pool({
+  connectionString,
+  ssl: sslConfig,
+  max: 10,
+  keepAlive: true,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+});
+
+// An idle connection closed by the database emits 'error' on the pool; without a listener
+// that crashes the server. The pool discards the broken connection and opens a new one.
+pool.on('error', (error) => {
+  console.warn(`PostgreSQL idle connection error (it will be replaced): ${error.message}`);
+});
 
 // Read by features that need real persistence (auth, career module) to decide
 // between PostgreSQL and mock-data mode.

@@ -13,7 +13,6 @@ export const navItems = [
   { label: 'Projects', path: '/projects', icon: 'FolderKanban' },
   { label: 'Jobs', path: '/jobs', icon: 'BriefcaseBusiness' },
   { label: 'Resume', path: '/resume', icon: 'FileText' },
-  { label: 'Applications', path: '/applications', icon: 'ClipboardList' },
   { label: 'AI Career Mentor', path: '/chat', icon: 'MessageSquareText' },
   { label: 'Profile', path: '/profile', icon: 'UserRound' },
   { label: 'Settings', path: '/settings', icon: 'Settings' },
@@ -34,13 +33,6 @@ export const careerExplorer = [
   { id: 4, name: 'Product Analyst', category: 'Business', overview: 'Connects business goals with product and analytics insights.', salary: '$95k - $130k', skills: ['SQL', 'Excel', 'Problem solving', 'Communication'], tools: ['SQL', 'Excel', 'Looker', 'Jira'], education: 'Business, Analytics, or STEM background' },
   { id: 5, name: 'Cybersecurity Analyst', category: 'Cybersecurity', overview: 'Protects enterprise systems and investigates threats.', salary: '$85k - $115k', skills: ['Security principles', 'Networking', 'Risk analysis'], tools: ['Wireshark', 'Splunk', 'SIEM'], education: 'IT, CS or cyber-focused degree' },
   { id: 6, name: 'UX Designer', category: 'Design', overview: 'Designs seamless user experiences with research-informed decision making.', salary: '$80k - $110k', skills: ['Research', 'Figma', 'Interaction design'], tools: ['Figma', 'Notion', 'Maze'], education: 'Design or human-computer interaction' },
-];
-
-export const applicationsSeed = [
-  { company: 'Northstar Analytics', position: 'Junior Data Analyst', date: '2026-08-10', salary: '$90k', status: 'Applied', notes: 'Resume submitted', interviewDate: '2026-08-20' },
-  { company: 'BrightLabs', position: 'Data Science Intern', date: '2026-08-14', salary: '$75k', status: 'Interview', notes: 'Technical assessment complete', interviewDate: '2026-08-26' },
-  { company: 'Orbit Growth', position: 'Product Analyst', date: '2026-08-15', salary: '$95k', status: 'Saved', notes: 'Researching company fit', interviewDate: null },
-  { company: 'Crestline AI', position: 'ML Engineer', date: '2026-08-12', salary: '$110k', status: 'Assessment', notes: 'Pending coding test', interviewDate: null },
 ];
 
 export const chatSuggestions = ['What career suits me?', 'What should I learn next?', 'How can I improve my resume?', 'What skills am I missing?', 'Which projects should I build?', 'How do I prepare for interviews?'];

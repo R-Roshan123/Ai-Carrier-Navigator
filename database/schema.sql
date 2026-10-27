@@ -72,19 +72,6 @@ CREATE TABLE IF NOT EXISTS jobs (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS applications (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  company VARCHAR(255),
-  position VARCHAR(255),
-  date DATE,
-  salary VARCHAR(255),
-  status VARCHAR(50),
-  notes TEXT,
-  interview_date TIMESTAMP,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
 CREATE TABLE IF NOT EXISTS notifications (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
