@@ -36,7 +36,7 @@ export default function AppShell({ children }) {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     window.dispatchEvent(new Event('auth-changed'));
-    navigate('/landing');
+    navigate('/');
   };
 
   return (
@@ -96,7 +96,7 @@ export default function AppShell({ children }) {
                   <UserCircle2 className="h-7 w-7 text-slate-700" />
                   <div className="hidden text-left sm:block">
                     <div className="text-sm font-semibold text-slate-900">{currentUser?.name || 'User'}</div>
-                    <div className="text-[11px] text-slate-500">{currentUser?.department || 'Member'}</div>
+                    <div className="text-[11px] text-slate-500">{currentUser?.role === 'admin' ? currentUser.designation || 'Admin' : currentUser?.department || 'Student'}</div>
                   </div>
                   <ChevronDown className="h-4 w-4 text-slate-500" />
                 </button>

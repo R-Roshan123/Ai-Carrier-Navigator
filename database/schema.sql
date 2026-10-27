@@ -9,6 +9,17 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Account details collected at signup. Students fill the student columns, admins the staff columns.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(30);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS register_number VARCHAR(50);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS college VARCHAR(255);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS year_of_study VARCHAR(20);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS staff_id VARCHAR(50);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS designation VARCHAR(100);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS organization VARCHAR(255);
+CREATE UNIQUE INDEX IF NOT EXISTS users_register_number_key ON users (LOWER(register_number)) WHERE register_number IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS users_staff_id_key ON users (LOWER(staff_id)) WHERE staff_id IS NOT NULL;
+
 CREATE TABLE IF NOT EXISTS profiles (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,

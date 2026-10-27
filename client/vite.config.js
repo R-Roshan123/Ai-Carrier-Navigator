@@ -7,6 +7,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    // Allow importing course content and exam questions from the repo-level /shared folder.
+    fs: { allow: ['..'] },
   },
   preview: {
     host: '0.0.0.0',

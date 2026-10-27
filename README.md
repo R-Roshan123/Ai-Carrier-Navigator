@@ -98,18 +98,19 @@ Users explore job roles, see which companies hire for them, follow a staged road
    ```
    DATABASE_URL=postgresql://postgres:<password>@localhost:5432/career_navigator
    ADMIN_EMAIL=you@example.com        # promoted to admin by the seed script
+   ADMIN_SIGNUP_CODE=                 # optional; lets people with this code sign up at /admin/signup
    UPLOAD_DIR=                        # optional; defaults to server/uploads
    ```
 2. Create the tables (idempotent – runs `database/schema.sql` then `database/career_schema.sql`):
    ```bash
    npm run db:setup
    ```
-3. Start the app and register the account for `ADMIN_EMAIL`.
+3. Start the app and register the account for `ADMIN_EMAIL` (or create an admin directly at `/admin/signup` using `ADMIN_SIGNUP_CODE`).
 4. Seed 6 roles, 21 companies, 39 certifications and a full roadmap per role:
    ```bash
    npm run seed:career
    ```
-   The seed never deletes or overwrites data: re-running inserts only what is missing and leaves admin-edited roadmaps untouched. Log out and back in after promotion so the admin menu appears.
+   The seed never deletes or overwrites data: re-running inserts only what is missing and leaves admin-edited roadmaps untouched. After promotion, sign in through the admin login at `/admin/login` so the admin menu appears. Students sign in at `/login`; each login only accepts its own account type.
 
 New dependency: `multer` (server, certificate uploads). No new client dependencies.
 

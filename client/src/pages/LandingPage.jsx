@@ -1,5 +1,6 @@
 import { ArrowRight, BookOpen, BrainCircuit, Briefcase, Map, Rocket, Sparkles, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { readCurrentUser } from '../utils/careerFormat';
 
 const steps = [
   'Create your profile',
@@ -21,6 +22,8 @@ const features = [
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const currentUser = readCurrentUser();
+  const isLoggedIn = Boolean(currentUser && localStorage.getItem('token'));
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-[#f7f8fc] text-slate-900">
@@ -43,7 +46,17 @@ export default function LandingPage() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/login')} className="rounded-full border border-slate-300 bg-white px-5 py-2.5 text-base font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Log in</button>
+          {isLoggedIn ? (
+            <button onClick={() => navigate(currentUser.role === 'admin' ? '/admin/career' : '/dashboard')} className="rounded-full bg-indigo-600 px-5 py-2.5 text-base font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              {currentUser.role === 'admin' ? 'Admin panel' : 'Go to dashboard'}
+            </button>
+          ) : (
+            <>
+              <button onClick={() => navigate('/admin/login')} className="hidden rounded-full px-4 py-2.5 text-base font-semibold text-slate-600 transition hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:inline-flex">Admin login</button>
+              <button onClick={() => navigate('/login')} className="rounded-full border border-slate-300 bg-white px-5 py-2.5 text-base font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Student login</button>
+              <button onClick={() => navigate('/signup')} className="hidden rounded-full bg-indigo-600 px-5 py-2.5 text-base font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 md:inline-flex">Sign up</button>
+            </>
+          )}
         </div>
         </div>
       </header>

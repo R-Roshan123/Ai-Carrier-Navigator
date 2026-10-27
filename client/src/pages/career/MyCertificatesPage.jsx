@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, Award, CheckCircle2, Clock3, Download, Eye, FileText, Pencil, Trash2, Upload, XCircle } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import StatCard from '../../components/StatCard';
 import CertificatePreview from '../../components/career/CertificatePreview';
 import CertificateUploadModal from '../../components/career/CertificateUploadModal';
@@ -10,6 +10,7 @@ import { PageHeader, Tabs } from '../../components/career/CareerUi';
 import { CardSkeleton, EmptyState, ErrorState, InlineAlert } from '../../components/career/PageState';
 import useApiData from '../../hooks/useApiData';
 import { careerApi, getErrorMessage, saveBlob } from '../../services/careerApi';
+import { courseApi } from '../../services/courseApi';
 import { formatDate, formatFileSize } from '../../utils/careerFormat';
 
 const STATUS_TABS = [
@@ -86,6 +87,66 @@ function CertificateItem({ certificate, onPreview, onDownload, onEdit, onDelete 
   );
 }
 
+// Certificates earned by completing in-app courses (issued automatically, no review needed).
+function CourseCertificates() {
+  const courseProgress = useApiData(() => courseApi.getProgress(), []);
+  const earned = courseProgress.data?.certificates || [];
+
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Course completion certificates</h2>
+          <p className="mt-1 text-sm text-slate-600">Earned by finishing every lesson of a course and passing its final exam.</p>
+        </div>
+        <Link to="/courses" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">Browse courses</Link>
+      </div>
+
+      {courseProgress.error && <ErrorState message={courseProgress.error} onRetry={courseProgress.reload} />}
+      {courseProgress.loading && !courseProgress.data && <CardSkeleton count={3} />}
+
+      {courseProgress.data && (
+        earned.length ? (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {earned.map((certificate) => (
+              <article key={certificate.code} className="flex flex-col rounded-3xl border border-emerald-200 bg-white p-5 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <StatusBadge status="Verified" />
+                  <span className="text-xs font-medium text-slate-500">AI Career Navigator</span>
+                </div>
+                <h3 className="mt-3 text-base font-bold text-slate-900">{certificate.courseTitle}</h3>
+                <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+                  <dt className="text-slate-500">Issued</dt>
+                  <dd className="text-slate-700">{formatDate(certificate.issuedAt)}</dd>
+                  <dt className="text-slate-500">Exam score</dt>
+                  <dd className="text-slate-700">{certificate.score}%</dd>
+                  <dt className="text-slate-500">Certificate ID</dt>
+                  <dd className="break-all font-mono text-slate-700">{certificate.code}</dd>
+                </dl>
+                <div className="mt-auto flex flex-wrap gap-2 pt-4">
+                  <Link to={`/certificate/${certificate.code}`} target="_blank" className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1.5 text-sm font-medium text-white">
+                    <Eye className="h-3.5 w-3.5" /> View & print
+                  </Link>
+                  <Link to={`/courses/${certificate.courseSlug}`} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    Review course
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon={Award}
+            title="No course certificates yet"
+            message="Complete all lessons of a course and pass its final exam to earn a certificate."
+            action={<Link to="/courses" className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Start a course</Link>}
+          />
+        )
+      )}
+    </section>
+  );
+}
+
 export default function MyCertificatesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const certificates = useApiData(() => careerApi.listMyCertificates(), []);
@@ -139,7 +200,7 @@ export default function MyCertificatesPage() {
       <PageHeader
         eyebrow="My certificates"
         title="Certificates & credentials"
-        description="Upload your certificates for admin verification. Verified certificates count towards your role readiness."
+        description="Certificates you earned by completing our courses, plus certificates you upload for admin verification. Verified uploads count towards your role readiness."
         actions={(
           <button
             onClick={() => setModal({ open: true, certificate: null, certificationId: null })}
@@ -151,6 +212,13 @@ export default function MyCertificatesPage() {
       />
 
       {notice.text && <InlineAlert tone={notice.tone}>{notice.text}</InlineAlert>}
+
+      <CourseCertificates />
+
+      <div>
+        <h2 className="text-xl font-bold text-slate-900">Uploaded certificates</h2>
+        <p className="mt-1 text-sm text-slate-600">External certificates you upload are reviewed by an admin.</p>
+      </div>
       {certificates.error && <ErrorState message={certificates.error} onRetry={certificates.reload} />}
 
       {summary && (
