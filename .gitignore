@@ -11,3 +11,5 @@ npm-debug.log*
 
 # Career module certificate uploads
 server/uploads/
+.vercel
+.env*

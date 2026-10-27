@@ -1,11 +1,14 @@
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import multer from 'multer';
 
 const serverDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const uploadRoot = process.env.UPLOAD_DIR ? path.resolve(process.env.UPLOAD_DIR) : path.join(serverDir, 'uploads');
+// Vercel's filesystem is read-only except the temporary folder, so uploads go there by default.
+const defaultUploadRoot = process.env.VERCEL ? path.join(os.tmpdir(), 'uploads') : path.join(serverDir, 'uploads');
+const uploadRoot = process.env.UPLOAD_DIR ? path.resolve(process.env.UPLOAD_DIR) : defaultUploadRoot;
 
 // Files live outside any static folder and are only served through the
 // authenticated GET /api/career/certificates/:id/file endpoint.

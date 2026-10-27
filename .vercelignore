@@ -1,0 +1,10 @@
+# Local-only files that must never be uploaded to Vercel. Secrets are set in the
+# Vercel project's Environment Variables instead of .env files.
+.env
+.env.*
+!.env.example
+node_modules
+client/node_modules
+client/dist
+server/uploads
+*.log

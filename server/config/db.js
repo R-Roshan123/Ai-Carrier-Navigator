@@ -12,7 +12,7 @@ export const connectionString =
 const isLocalDatabase = /@(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(connectionString);
 
 export const sslConfig =
-  !isLocalDatabase && (process.env.NODE_ENV === 'production' || process.env.SUPABASE_URL)
+  !isLocalDatabase && (process.env.NODE_ENV === 'production' || process.env.VERCEL || process.env.SUPABASE_URL)
     ? { rejectUnauthorized: false }
     : false;
 
