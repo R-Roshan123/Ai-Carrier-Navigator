@@ -28,6 +28,7 @@ import { navItems } from '../data/seedData';
 import FloatingAssistant from '../components/assistant/FloatingAssistant';
 import ColorModeToggle from '../components/ColorModeToggle';
 import ExperimentalNavigation from '../components/ExperimentalNavigation';
+import TopicArtwork from '../components/TopicArtwork';
 
 const readCurrentUser = () => {
   try {
@@ -59,7 +60,7 @@ const navigationIcons = {
 };
 
 export default function AppShell({ children }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1024);
   const touchStart = useRef(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [navMapOpen, setNavMapOpen] = useState(false);
@@ -79,7 +80,7 @@ export default function AppShell({ children }) {
 
   useEffect(() => {
     const onTouchStart = (event) => {
-      if (window.innerWidth > 1024 || event.changedTouches.length !== 1) return;
+      if (event.changedTouches.length !== 1) return;
       const touch = event.changedTouches[0];
       touchStart.current = { x: touch.clientX, y: touch.clientY, wasOpen: mobileOpen };
     };
@@ -90,8 +91,8 @@ export default function AppShell({ children }) {
       const touch = event.changedTouches[0];
       const deltaX = touch.clientX - start.x;
       const deltaY = Math.abs(touch.clientY - start.y);
-      if (deltaY > 70 || Math.abs(deltaX) < 64) return;
-      if (!start.wasOpen && start.x <= 28 && deltaX > 0) setMobileOpen(true);
+      if (deltaY > 70 || Math.abs(deltaX) < 52) return;
+      if (!start.wasOpen && start.x <= 32 && deltaX > 0) setMobileOpen(true);
       if (start.wasOpen && deltaX < 0) setMobileOpen(false);
     };
     window.addEventListener('touchstart', onTouchStart, { passive: true });
@@ -137,8 +138,13 @@ export default function AppShell({ children }) {
   return (
     <div className="cyber-theme app-shell-root min-h-screen w-full bg-[#f2f5f9] text-slate-900">
       <div className="flex min-h-screen">
-        {mobileOpen && <button className="fixed inset-0 z-30 bg-slate-950/30 lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close navigation overlay" />}
-        <aside className={`workspace-sidebar ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 flex w-[17.5rem] flex-col border-r border-slate-800 bg-slate-950 p-4 shadow-2xl transition-transform duration-300 lg:static lg:translate-x-0 lg:shadow-none`}>
+        <button
+          className={`workspace-drawer-backdrop ${mobileOpen ? 'is-open' : ''}`}
+          onClick={() => setMobileOpen(false)}
+          aria-label="Close navigation drawer"
+          tabIndex={mobileOpen ? 0 : -1}
+        />
+        <aside id="workspace-navigation" aria-hidden={!mobileOpen} inert={!mobileOpen} className={`workspace-sidebar ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 flex w-[min(17.5rem,86vw)] flex-col border-r border-slate-800 bg-slate-950 p-4 shadow-2xl`}>
           <div className="mb-10 flex items-center justify-between px-2 pt-2">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-400 text-slate-950 shadow-lg shadow-orange-300/20">
@@ -149,7 +155,7 @@ export default function AppShell({ children }) {
                 <div className="text-[11px] font-medium tracking-wide text-slate-400">AI CAREER NAVIGATOR</div>
               </div>
             </div>
-            <button className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close navigation">
+            <button className="workspace-drawer-close" onClick={() => setMobileOpen(false)} aria-label="Close navigation">
               <X className="h-5 w-5 text-slate-400" />
             </button>
           </div>
@@ -189,7 +195,7 @@ export default function AppShell({ children }) {
           <header className="workspace-topbar sticky top-0 z-30 border-b border-black/[0.06] bg-[#f2f5f9]/90 backdrop-blur-xl">
             <div className="flex items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
               <div className="flex items-center gap-3">
-                <button className="lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
+                <button className="workspace-drawer-toggle" onClick={() => setMobileOpen((open) => !open)} aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-controls="workspace-navigation" aria-expanded={mobileOpen}>
                   <Menu className="h-5 w-5 text-slate-700" />
                 </button>
                 <button type="button" className="nav-map-trigger" onClick={() => setNavMapOpen(true)} aria-label="Open navigation map" title="Explore navigation">
@@ -231,7 +237,10 @@ export default function AppShell({ children }) {
           </header>
 
           <main className="workspace-main mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
-            <div key={location.pathname} className="route-transition">{children}</div>
+            <div key={location.pathname} className="route-transition">
+              <TopicArtwork path={location.pathname} />
+              {children}
+            </div>
           </main>
         </div>
       </div>
