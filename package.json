@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"node server/index.js\" \"npm --prefix client run dev -- --host 0.0.0.0\"",
+    "dev": "concurrently \"node --watch-path=server --watch-path=shared server/index.js\" \"npm --prefix client run dev -- --host 0.0.0.0\"",
     "server": "node server/index.js",
     "client": "npm --prefix client run dev -- --host 0.0.0.0",
     "db:setup": "node server/scripts/setupDatabase.js",
