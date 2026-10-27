@@ -32,9 +32,10 @@ export const protect = async (req, res, next) => {
       }
       // Refresh the role from DB so promotions/demotions take effect immediately.
       decoded.role = rows[0].role;
-    } catch {
+    } catch (error) {
       // DB query failed unexpectedly – fail closed.
-      return res.status(503).json({ message: 'Service temporarily unavailable.' });
+      console.error(`Auth check failed: ${error.message}`);
+      return res.status(503).json({ message: 'The database is temporarily unreachable. Please try again in a moment.' });
     }
   }
 

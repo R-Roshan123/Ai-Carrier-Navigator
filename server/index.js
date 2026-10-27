@@ -14,7 +14,6 @@ import roadmapRoutes from './routes/roadmapRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import resumeRoutes from './routes/resumeRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
-import applicationRoutes from './routes/applicationRoutes.js';
 import assessmentRoutes from './routes/assessmentRoutes.js';
 import careerTrackerRoutes from './routes/careerTrackerRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
@@ -57,7 +56,6 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/resume', resumeRoutes);
 app.use('/api/assessment', assessmentRoutes);
 app.use('/api/ai', aiRoutes);
-app.use('/api/applications', applicationRoutes);
 app.use('/api/career', careerTrackerRoutes);
 app.use('/api/courses', courseRoutes);
 

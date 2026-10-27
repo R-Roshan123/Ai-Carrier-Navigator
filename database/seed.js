@@ -33,14 +33,6 @@ const profileData = [
   ['+1 555 010 1005', 'Chicago, IL', 'B.S. Computer Engineering', 'Illinois Tech', 2024, 3.7, ['JavaScript', 'React', 'Node.js'], ['Software Engineering', 'AI'], ['Software Engineer at MakerHub'], ['Hackathon winner']],
 ];
 
-const applicationData = [
-  ['Northstar Analytics', 'Junior Data Analyst', '2026-08-10', '$90k', 'Applied', 'Resume submitted', '2026-08-20'],
-  ['BrightLabs', 'Data Science Intern', '2026-08-14', '$75k', 'Interview', 'Technical assessment complete', '2026-08-26'],
-  ['Orbit Growth', 'Product Analyst', '2026-08-15', '$95k', 'Saved', 'Researching company fit', null],
-  ['Crestline Security', 'Security Operations Analyst', '2026-08-12', '$105k', 'Assessment', 'Pending coding test', null],
-  ['PixelWorks', 'UX Research Assistant', '2026-08-18', '$72k', 'Applied', 'Portfolio shared with recruiter', null],
-];
-
 const notificationData = [
   ['Your assessment is ready', 'Review your career matches and recommended next steps.', false],
   ['New job match', 'A Junior Data Analyst role matches 91% of your profile.', false],
@@ -101,9 +93,6 @@ async function seed() {
       const userId = orderedUserIds[index];
       const assessment = [userId, JSON.stringify({ seed: 'demo', interests: ['technology', 'problem solving'], completed: true }), JSON.stringify({ seed: 'demo', primaryCareer: demoCareers[index][0], matchScore: 80 + index * 3 })];
       await insertIfMissing(client, 'assessment_results', "user_id = $1 AND answers->>'seed' = 'demo'", [userId], assessment, '(user_id, answers, recommendations)');
-
-      const application = applicationData[index];
-      await insertIfMissing(client, 'applications', 'user_id = $1 AND company = $2 AND position = $3', [userId, application[0], application[1]], [userId, ...application], '(user_id, company, position, date, salary, status, notes, interview_date)');
 
       const notification = notificationData[index];
       await insertIfMissing(client, 'notifications', 'user_id = $1 AND title = $2', [userId, notification[0]], [userId, ...notification], '(user_id, title, message, read_status)');

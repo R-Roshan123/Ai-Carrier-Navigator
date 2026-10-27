@@ -13,7 +13,6 @@ const matchTone = (match) => (match >= 75 ? 'bg-emerald-50 text-emerald-700' : m
 
 export default function JobsPage() {
   const [savedJobs, setSavedJobs] = useState([]);
-  const [appliedJobs, setAppliedJobs] = useState([]);
   const navigate = useNavigate();
   const learning = useApiData(() => courseApi.getProgress(), []);
   const matches = matchJobs(readScores(), learning.data);
@@ -98,7 +97,6 @@ export default function JobsPage() {
               <div className="mt-auto flex flex-wrap gap-2 pt-5">
                 <button onClick={() => alert(`${job.title} at ${job.company}\n${job.experience} · ${job.workType}\n${job.salary}\nSkills: ${job.skills.join(', ')}`)} className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white">View job</button>
                 <button onClick={() => setSavedJobs((current) => current.includes(job.title) ? current.filter((title) => title !== job.title) : [...current, job.title])} className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700">{savedJobs.includes(job.title) ? 'Saved' : 'Save job'}</button>
-                <button onClick={() => { setAppliedJobs((current) => current.includes(job.title) ? current : [...current, job.title]); navigate('/applications'); }} className="rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700">{appliedJobs.includes(job.title) ? 'Applied' : 'Apply'}</button>
                 {!score && <button onClick={() => navigate(`/assessment?role=${role.slug}`)} className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700">Take assessment to improve match</button>}
                 {!progress.certificate && <button onClick={() => navigate(`/courses/${role.slug}`)} className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700"><Award className="h-4 w-4" /> {progress.lessonsDone ? 'Finish course' : 'Start course'}</button>}
               </div>

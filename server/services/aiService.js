@@ -142,43 +142,6 @@ export const aiService = {
     return { success: true, provider: DEFAULT_MODEL, projects: [] };
   },
 
-  async analyzeResume(resumeData) {
-    if (!process.env.OPENAI_API_KEY) {
-      return {
-        success: true,
-        provider: 'fallback',
-        message: fallbackMessage,
-        score: 82,
-        breakdown: {
-          skills: 85,
-          experience: 78,
-          projects: 80,
-          keywords: 75,
-          formatting: 90,
-        },
-        strengths: ['Strong technical foundation', 'Clear academic background'],
-        improvements: ['Add measurable impact metrics', 'Include project outcomes'],
-        missingSkills: ['Power BI', 'SQL optimization'],
-      };
-    }
-
-    return { success: true, provider: DEFAULT_MODEL, score: 0 };
-  },
-
-  async generateResume(jobProfile) {
-    if (!process.env.OPENAI_API_KEY) {
-      return {
-        success: true,
-        provider: 'fallback',
-        message: fallbackMessage,
-        summary:
-          'Results-driven data-focused candidate with strong analytical thinking, problem solving, and a passion for solving real-world challenges through technology.',
-      };
-    }
-
-    return { success: true, provider: DEFAULT_MODEL, summary: '' };
-  },
-
   async analyzeJobMatch(job, profile) {
     if (!process.env.OPENAI_API_KEY) {
       return {

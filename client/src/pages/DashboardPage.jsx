@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, BookOpen, Briefcase, Sparkles, Star, TrendingUp } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Award, BookOpen, Sparkles, Star, TrendingUp } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import StatCard from '../components/StatCard';
 import ProgressRing from '../components/ProgressRing';
@@ -81,7 +81,7 @@ export default function DashboardPage() {
         <StatCard label="Career match" value={bestMatch === undefined ? '—' : `${bestMatch}%`} change={bestMatch === undefined ? 'Take an assessment' : topRoles[0].title} icon={Sparkles} />
         <StatCard label="Career readiness" value="78/100" change="+4%" icon={Star} />
         <StatCard label="Roadmap progress" value={focusStarted ? `${focus.summary.roadmapPercent}%` : '—'} change={focusStarted ? focus.role.title : 'Start a roadmap'} icon={BookOpen} />
-        <StatCard label="Applications" value="12" change="+3" icon={Briefcase} />
+        <StatCard label="Certificates earned" value={learning.data ? learning.data.certificates.length : '—'} change="From courses" icon={Award} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.5fr_0.9fr]">
@@ -157,6 +157,12 @@ export default function DashboardPage() {
             <button onClick={() => navigate('/roadmap')} className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600">Review roadmap <ArrowRight className="h-4 w-4" /></button>
           </div>
 
+          <div className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.03)] sm:p-6">
+            <div className="mb-4 flex items-center justify-between"><div className="text-lg font-bold text-slate-900">Recommended jobs</div><button onClick={() => navigate('/jobs')} className="text-xs font-semibold text-indigo-600">See jobs</button></div>
+            <div className="space-y-4">
+              {!jobMatches.length && <p className="text-sm text-slate-600">Take an assessment or start a course to see jobs matched to you.</p>}
+              {jobMatches.map(({ job, match }) => (
+                <div key={job.title} className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3.5">
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <div className="text-lg font-bold text-slate-900">Recommended jobs</div>

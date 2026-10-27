@@ -82,7 +82,7 @@ cd client && npm run dev
 - Personalized roadmap
 - Course and project recommendations
 - Resume analysis and builder
-- Job matching and application tracking
+- Job matching
 - AI mentor chatbot
 - Dashboard metrics and analytics
 

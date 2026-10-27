@@ -10,7 +10,6 @@ import SkillGapPage from './pages/SkillGapPage';
 import RoadmapPage from './pages/RoadmapPage';
 import JobsPage from './pages/JobsPage';
 import ResumePage from './pages/ResumePage';
-import ApplicationsPage from './pages/ApplicationsPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
@@ -134,7 +133,6 @@ function App() {
                   <Route path="/roadmap" element={<RoadmapPage />} />
                   <Route path="/jobs" element={<JobsPage />} />
                   <Route path="/resume" element={<ResumePage />} />
-                  <Route path="/applications" element={<ApplicationsPage />} />
                   <Route path="/chat" element={<ChatPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/settings" element={<SettingsPage />} />
