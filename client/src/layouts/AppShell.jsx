@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   BookOpen,
   BrainCircuit,
@@ -18,7 +18,6 @@ import {
   Map,
   MessageSquareText,
   Route,
-  Search,
   Settings,
   ShieldCheck,
   Sparkles,
@@ -63,6 +62,7 @@ export default function AppShell({ children }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(readCurrentUser);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const updateUser = () => setCurrentUser(readCurrentUser());
@@ -70,6 +70,72 @@ export default function AppShell({ children }) {
     window.addEventListener('auth-changed', updateUser);
     return () => window.removeEventListener('auth-changed', updateUser);
   }, []);
+
+  useEffect(() => {
+    const main = document.querySelector('.workspace-main');
+    if (!main || !('IntersectionObserver' in window)) return undefined;
+
+    const targets = main.querySelectorAll('.route-transition > * > *, .route-transition .grid > *');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+
+    targets.forEach((target, index) => {
+      target.classList.add('scroll-reveal');
+      target.style.setProperty('--reveal-delay', `${(index % 5) * 75}ms`);
+      observer.observe(target);
+    });
+
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const page = document.querySelector('.route-transition');
+    if (!page || typeof document.createTreeWalker !== 'function') return undefined;
+
+    const walker = document.createTreeWalker(page, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent || !node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+        if (parent.closest('svg, script, style, textarea, input, select, .word-pop')) return NodeFilter.FILTER_REJECT;
+        if (!parent.closest('h1, h2')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    const headingWordIndexes = new WeakMap();
+    textNodes.forEach((node) => {
+      const fragment = document.createDocumentFragment();
+      const heading = node.parentElement.closest('h1, h2');
+      node.textContent.split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          fragment.append(document.createTextNode(part));
+          return;
+        }
+        const word = document.createElement('span');
+        word.className = 'word-pop';
+        const wordIndex = headingWordIndexes.get(heading) || 0;
+        word.style.setProperty('--word-index', wordIndex);
+        word.textContent = part;
+        headingWordIndexes.set(heading, wordIndex + 1);
+        fragment.append(word);
+      });
+      node.replaceWith(fragment);
+    });
+
+    return () => {
+      page.querySelectorAll('.word-pop').forEach((word) => word.replaceWith(document.createTextNode(word.textContent)));
+      page.normalize();
+    };
+  }, [location.pathname]);
 
   const userInitial = (currentUser?.name || 'U').slice(0, 1).toUpperCase();
 
@@ -138,11 +204,6 @@ export default function AppShell({ children }) {
                 <button className="lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
                   <Menu className="h-5 w-5 text-slate-700" />
                 </button>
-                <div className="hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-400 shadow-sm md:flex">
-                  <Search className="h-4 w-4" />
-                  <span className="text-sm">Search your workspace</span>
-                  <span className="ml-10 rounded border border-slate-200 px-1.5 py-0.5 text-[10px] font-medium text-slate-400">⌘ K</span>
-                </div>
               </div>
 
               <div className="flex items-center gap-3">
@@ -158,7 +219,9 @@ export default function AppShell({ children }) {
             {profileOpen && <div className="absolute right-4 top-[4.5rem] w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-950/10"><div className="border-b border-slate-100 px-3 py-3"><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-sm font-bold text-indigo-700">{userInitial}</span><div><div className="text-sm font-semibold text-slate-900">{currentUser?.name || 'User'}</div><div className="mt-0.5 max-w-44 truncate text-xs text-slate-500">{currentUser?.email || currentUser?.department || 'Career workspace'}</div></div></div></div><button onClick={() => { setProfileOpen(false); navigate('/profile'); }} className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"><UserRound className="h-4 w-4 text-slate-500" />View profile</button><button onClick={() => { setProfileOpen(false); navigate('/settings'); }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"><Settings className="h-4 w-4 text-slate-500" />Account settings</button><div className="my-1 border-t border-slate-100" /><button onClick={handleLogout} className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"><LogOut className="h-4 w-4" />Log out</button></div>}
           </header>
 
-          <main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">{children}</main>
+          <main className="workspace-main mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+            <div key={location.pathname} className="route-transition">{children}</div>
+          </main>
         </div>
       </div>
     </div>
