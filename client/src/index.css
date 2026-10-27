@@ -1904,6 +1904,25 @@ img {
 :root[data-color-mode='dark'] .cyber-theme .workspace-main :is(button,a,[role='button'])[class*='bg-green-']:hover,
 :root[data-color-mode='dark'] .cyber-theme .workspace-main :is(button,a,[role='button'])[class*='bg-red-']:hover { background: #d7d7d7 !important; color: #111 !important; }
 
+/* Sidebar links keep strong contrast in both color modes and while the active link is hovered. */
+.cyber-theme .workspace-sidebar .workspace-nav-link {
+  background: transparent !important;
+  color: #d0d0d0 !important;
+  opacity: 1 !important;
+}
+.cyber-theme .workspace-sidebar .workspace-nav-link svg { color: inherit !important; opacity: 1 !important; }
+.cyber-theme .workspace-sidebar .workspace-nav-link:not([aria-current='page']):is(:hover, :focus-visible) {
+  background: #292929 !important;
+  color: #fff !important;
+}
+.cyber-theme .workspace-sidebar .workspace-nav-link[aria-current='page'],
+.cyber-theme .workspace-sidebar .workspace-nav-link[aria-current='page']:is(:hover, :focus-visible) {
+  background: #fff !important;
+  color: #111 !important;
+  box-shadow: inset 3px 0 #111 !important;
+}
+.cyber-theme .workspace-sidebar .workspace-nav-link[aria-current='page'] svg { color: #111 !important; }
+
 /* Slow word reveal for page headings and short intro copy on route entry. */
 .cyber-word-pop { animation: word-pop-in 1750ms cubic-bezier(.2,.68,.2,1) both !important; animation-delay: calc(220ms + var(--word-index, 0) * 190ms) !important; }
 @keyframes word-pop-in {
