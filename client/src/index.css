@@ -94,6 +94,45 @@ body {
 :root[data-theme='forest'] [class*='text-slate-6'],
 :root[data-theme='forest'] [class*='text-slate-5'] { color: #94a3b8 !important; }
 
+/* Keep the light-theme utility colors readable on dark workspace surfaces. */
+:root[data-theme='dark'] .workspace-main [class*='text-slate-4'],
+:root[data-theme='midnight'] .workspace-main [class*='text-slate-4'],
+:root[data-theme='forest'] .workspace-main [class*='text-slate-4'] { color: #a8b5c7 !important; }
+:root[data-theme='dark'] .workspace-main [class*='text-slate-3'],
+:root[data-theme='midnight'] .workspace-main [class*='text-slate-3'],
+:root[data-theme='forest'] .workspace-main [class*='text-slate-3'] { color: #cbd5e1 !important; }
+:root[data-theme='dark'] .workspace-main [class*='text-indigo-7'],
+:root[data-theme='midnight'] .workspace-main [class*='text-indigo-7'],
+:root[data-theme='forest'] .workspace-main [class*='text-indigo-7'],
+:root[data-theme='dark'] .workspace-main [class*='text-indigo-6'],
+:root[data-theme='midnight'] .workspace-main [class*='text-indigo-6'],
+:root[data-theme='forest'] .workspace-main [class*='text-indigo-6'] { color: #c4b5fd !important; }
+:root[data-theme='dark'] .workspace-main [class*='text-emerald-7'],
+:root[data-theme='midnight'] .workspace-main [class*='text-emerald-7'],
+:root[data-theme='forest'] .workspace-main [class*='text-emerald-7'] { color: #6ee7b7 !important; }
+:root[data-theme='dark'] .workspace-main [class*='text-amber-7'],
+:root[data-theme='midnight'] .workspace-main [class*='text-amber-7'],
+:root[data-theme='forest'] .workspace-main [class*='text-amber-7'] { color: #fcd34d !important; }
+:root[data-theme='dark'] .workspace-main [class*='text-red-7'],
+:root[data-theme='midnight'] .workspace-main [class*='text-red-7'],
+:root[data-theme='forest'] .workspace-main [class*='text-red-7'] { color: #fca5a5 !important; }
+:root[data-theme='dark'] .workspace-main [class*='text-blue-7'],
+:root[data-theme='midnight'] .workspace-main [class*='text-blue-7'],
+:root[data-theme='forest'] .workspace-main [class*='text-blue-7'] { color: #93c5fd !important; }
+
+:root[data-theme='dark'] .workspace-main [class*='bg-indigo-50'],
+:root[data-theme='midnight'] .workspace-main [class*='bg-indigo-50'],
+:root[data-theme='forest'] .workspace-main [class*='bg-indigo-50'] { background-color: #312e53 !important; }
+:root[data-theme='dark'] .workspace-main [class*='bg-emerald-50'],
+:root[data-theme='midnight'] .workspace-main [class*='bg-emerald-50'],
+:root[data-theme='forest'] .workspace-main [class*='bg-emerald-50'] { background-color: #123b32 !important; }
+:root[data-theme='dark'] .workspace-main [class*='bg-amber-50'],
+:root[data-theme='midnight'] .workspace-main [class*='bg-amber-50'],
+:root[data-theme='forest'] .workspace-main [class*='bg-amber-50'] { background-color: #40351d !important; }
+:root[data-theme='dark'] .workspace-main [class*='bg-red-50'],
+:root[data-theme='midnight'] .workspace-main [class*='bg-red-50'],
+:root[data-theme='forest'] .workspace-main [class*='bg-red-50'] { background-color: #44252b !important; }
+
 /* Shared finishing details for landing, auth, settings, and workspace screens. */
 :root:not([data-theme='dark']):not([data-theme='midnight']):not([data-theme='forest']) .bg-indigo-600 { background-color: #6749d4; }
 :root:not([data-theme='dark']):not([data-theme='midnight']):not([data-theme='forest']) .text-indigo-600 { color: #6749d4; }
@@ -115,6 +154,106 @@ textarea:focus {
 
 button {
   transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Small, restrained motion cues throughout the workspace. */
+@keyframes workspace-enter {
+  from { opacity: 0; transform: translateY(22px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes workspace-glow-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-12px, 10px, 0) scale(1.06); }
+}
+
+@keyframes link-letter-flicker {
+  0%, 24%, 46%, 100% { filter: brightness(1); text-shadow: 0 0 0 transparent; }
+  30%, 38% { filter: brightness(1.55); text-shadow: 0 0 0.55em currentColor; }
+}
+
+@keyframes word-pop-in {
+  0% { opacity: 0; transform: translate3d(0, 0.7em, 0) scale(0.82); filter: blur(2px); }
+  72% { opacity: 1; transform: translate3d(0, -0.06em, 0) scale(1.035); filter: blur(0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
+}
+
+.word-pop {
+  display: inline-block;
+  white-space: pre;
+  animation: word-pop-in 1050ms cubic-bezier(0.18, 0.8, 0.25, 1) both;
+  animation-delay: calc(var(--word-index, 0) * 115ms);
+  transform-origin: center bottom;
+}
+
+.route-transition {
+  animation: workspace-enter 520ms both cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translate3d(0, 42px, 0) scale(0.985);
+  transition: opacity 700ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+.workspace-main button:not(:disabled) {
+  transition: transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.workspace-main button:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.workspace-main a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 180ms ease;
+}
+
+.workspace-main a:hover {
+  animation: link-letter-flicker 620ms steps(2, end) 1;
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+}
+
+.workspace-main a svg {
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.workspace-main a:hover svg {
+  transform: translateX(3px);
+}
+
+.workspace-main .rounded-3xl {
+  transition: box-shadow 220ms ease, border-color 220ms ease, transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.workspace-main .rounded-3xl:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.11);
+}
+
+.route-transition > .space-y-6 > :first-child > .bg-indigo-500\/30,
+.route-transition > .space-y-6 > :first-child > .bg-violet-400\/10 {
+  animation: workspace-glow-drift 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 :root[data-theme='dark'] input,
