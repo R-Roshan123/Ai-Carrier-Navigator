@@ -1,23 +1,11 @@
-import { ArrowRight, BookOpen, BrainCircuit, Briefcase, Map, Rocket, Sparkles, Target } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, BookOpen, BrainCircuit, Briefcase, Check, Compass, Map, Sparkles, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { readCurrentUser } from '../utils/careerFormat';
 
-const steps = [
-  'Create your profile',
-  'Take AI assessment',
-  'Discover suitable careers',
-  'Identify skill gaps',
-  'Follow your learning roadmap',
-  'Build projects',
-  'Find matching jobs',
-  'Prepare for interviews',
-];
-
 const features = [
-  { title: 'AI Career Assessment', description: 'Understand your strengths, interests, and work style with adaptive guidance.', icon: BrainCircuit },
-  { title: 'Personalized Roadmaps', description: 'Get step-by-step learning plans based on your target career path.', icon: Map },
-  { title: 'Job Matching', description: 'Discover the roles where your profile and skills have the strongest fit.', icon: Briefcase },
-  { title: 'Resume Intelligence', description: 'Turn your experience into a polished, high-performing resume story.', icon: BookOpen },
+  { number: '01', title: 'Know your direction', description: 'A thoughtful assessment turns your strengths and interests into a clear starting point.', icon: BrainCircuit, color: 'bg-violet-100 text-violet-700' },
+  { number: '02', title: 'Build the right skills', description: 'Follow a learning path shaped around the role you want and the skills you already have.', icon: Map, color: 'bg-lime-100 text-lime-800' },
+  { number: '03', title: 'Move with confidence', description: 'Find relevant roles, sharpen your resume, and keep your progress in one place.', icon: Briefcase, color: 'bg-sky-100 text-sky-800' },
 ];
 
 export default function LandingPage() {
@@ -26,23 +14,16 @@ export default function LandingPage() {
   const isLoggedIn = Boolean(currentUser && localStorage.getItem('token'));
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-[#f7f8fc] text-slate-900">
-      <header className="sticky top-0 z-30 w-full border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
-        <div className="flex w-full items-center justify-between px-4 py-5 sm:px-8 lg:px-12">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white">
-            <Sparkles className="h-5 w-5" />
-          </div>
-          <div>
-              <div className="text-xl font-bold tracking-tight">AI Career</div>
-              <div className="text-sm text-slate-500">Navigator</div>
-          </div>
-        </div>
-
-        <nav className="hidden items-center gap-8 text-base font-medium text-slate-600 md:flex">
-          <a href="#how-it-works">How it works</a>
-          <a href="#features">Features</a>
-          <a href="#journey">Career journey</a>
+    <div className="min-h-screen overflow-hidden bg-[#f5f4f0] text-[#171717]">
+      <header className="relative z-20 mx-auto flex max-w-[1440px] items-center justify-between px-5 py-5 sm:px-9 lg:px-14">
+        <a href="#top" className="flex items-center gap-3" aria-label="CareerPilot home">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#171717] text-lime-300"><Sparkles className="h-5 w-5" /></span>
+          <span className="text-lg font-bold tracking-tight">CareerPilot</span>
+        </a>
+        <nav className="hidden items-center gap-9 text-sm font-medium text-[#5d5d59] md:flex">
+          <a className="transition hover:text-black" href="#approach">Our approach</a>
+          <a className="transition hover:text-black" href="#tools">What you get</a>
+          <a className="transition hover:text-black" href="#journey">Your journey</a>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -59,147 +40,93 @@ export default function LandingPage() {
           )}
         </div>
         </div>
+        <button onClick={() => navigate('/login')} className="group inline-flex items-center gap-3 rounded-full border border-black/15 bg-white px-5 py-2.5 text-sm font-semibold transition hover:border-black hover:bg-black hover:text-white">
+          Log in <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+        </button>
       </header>
 
-      <main>
-        <section className="flex min-h-[calc(100vh-80px)] w-full items-center bg-[radial-gradient(circle_at_top_right,#dbeafe,transparent_42%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
-          <div className="grid w-full gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div>
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2 text-base font-semibold text-indigo-700 shadow-sm">
-              <Target className="h-4 w-4" />
-              Personal AI career guidance
-            </div>
-            <h1 className="max-w-4xl text-5xl font-bold leading-[0.98] tracking-tight text-slate-950 sm:text-6xl lg:text-8xl">
-              Navigate Your Career With AI
-            </h1>
-            <p className="mt-7 max-w-3xl text-xl leading-8 text-slate-600 lg:text-2xl lg:leading-9">
-              Discover the right career, identify your skill gaps, build the skills you need, and become job-ready with your personal AI career navigator.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
-              <button onClick={() => navigate('/assessment')} className="inline-flex items-center gap-3 rounded-full bg-indigo-600 px-7 py-4 text-base font-bold text-white shadow-lg shadow-indigo-600/25 transition hover:-translate-y-1 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                Start Career Assessment
-                <ArrowRight className="h-4 w-4" />
-              </button>
-              <button onClick={() => navigate('/explorer')} className="rounded-full border border-slate-300 bg-white/80 px-7 py-4 text-base font-bold text-slate-700 shadow-sm transition hover:-translate-y-1 hover:border-indigo-300 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Explore Careers</button>
-            </div>
-
-            <div className="mt-12 flex flex-wrap gap-8 text-base text-slate-600 lg:gap-12 lg:text-lg">
-              <div><span className="font-bold text-slate-900">24k+</span> learners guided</div>
-              <div><span className="font-bold text-slate-900">92%</span> pathway fit rate</div>
-              <div><span className="font-bold text-slate-900">1.4k+</span> opportunities</div>
-            </div>
-          </div>
-
-          <div className="rounded-[2rem] border border-white/80 bg-white/60 p-4 shadow-2xl shadow-indigo-900/10 backdrop-blur-sm transition hover:-translate-y-1">
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <div className="text-base text-slate-500">Target Career</div>
-                  <div className="text-2xl font-bold text-slate-900">AI Engineer</div>
-                </div>
-                <div className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700">92%</div>
+      <main id="top">
+        <section className="mx-auto max-w-[1440px] px-5 pb-16 pt-8 sm:px-9 sm:pb-24 lg:px-14 lg:pt-12">
+          <div className="grid gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-8">
+            <div className="relative z-10">
+              <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#585854]"><span className="h-2 w-2 rounded-full bg-violet-500" />A clearer way forward</div>
+              <h1 className="max-w-3xl text-[clamp(3.6rem,8vw,7.8rem)] font-semibold leading-[0.88] tracking-[-0.075em]">Make your next move <span className="font-serif font-normal italic text-violet-700">count.</span></h1>
+              <p className="mt-8 max-w-xl text-lg leading-8 text-[#62625e] sm:text-xl">A career plan built around you. Find your direction, grow the skills that matter, and take the next step with confidence.</p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <button onClick={() => navigate('/signup')} className="group inline-flex items-center gap-5 rounded-full bg-[#171717] px-6 py-4 text-sm font-semibold text-white transition hover:bg-violet-700">Build my career plan <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></button>
+                <button onClick={() => navigate('/explorer')} className="inline-flex items-center gap-2 rounded-full px-5 py-4 text-sm font-semibold text-[#4c4c48] transition hover:bg-white">Explore careers <ArrowDownRight className="h-4 w-4" /></button>
               </div>
-
-              <div className="space-y-4">
-                <div className="rounded-xl bg-indigo-50 p-4">
-                  <div className="mb-2 flex items-center justify-between text-sm text-slate-600">
-                    <span>Career readiness</span>
-                    <span className="font-semibold text-slate-900">78/100</span>
-                  </div>
-                  <div className="h-2.5 w-full rounded-full bg-white">
-                    <div className="h-full w-[78%] rounded-full bg-indigo-600" />
-                  </div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Skill progress</div>
-                    <div className="mt-3 text-2xl font-bold text-slate-900">73%</div>
-                  </div>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Learning progress</div>
-                    <div className="mt-3 text-2xl font-bold text-slate-900">64%</div>
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <div className="mb-3 text-sm font-semibold text-slate-900">Recommended actions</div>
-                  <ul className="space-y-2 text-sm text-slate-600">
-                    <li>• Complete SQL module</li>
-                    <li>• Build your ML project</li>
-                    <li>• Improve your resume</li>
-                  </ul>
-                </div>
+              <div className="mt-12 flex items-center gap-4 border-t border-black/10 pt-5 text-sm text-[#696964]">
+                <div className="flex -space-x-2"><span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f5f4f0] bg-violet-200 text-[10px] font-bold text-violet-900">A</span><span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f5f4f0] bg-lime-200 text-[10px] font-bold text-lime-900">J</span><span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f5f4f0] bg-sky-200 text-[10px] font-bold text-sky-900">M</span></div>
+                <span><strong className="text-[#171717]">One path at a time.</strong> Built for your goals.</span>
               </div>
             </div>
-          </div>
+
+            <div className="relative mx-auto w-full max-w-[610px] lg:ml-auto">
+              <div className="absolute -right-8 -top-8 h-48 w-48 rounded-full bg-lime-300/70 blur-3xl" />
+              <div className="absolute -bottom-10 -left-8 h-52 w-52 rounded-full bg-violet-300/60 blur-3xl" />
+              <div className="relative rounded-[2rem] bg-[#171717] p-3 shadow-2xl shadow-black/15 sm:rotate-[2deg]">
+                <div className="rounded-[1.45rem] bg-[#f9f9f6] p-5 sm:p-7">
+                  <div className="flex items-center justify-between border-b border-black/10 pb-5">
+                    <div><div className="text-xs font-medium text-[#85857f]">YOUR CAREER SNAPSHOT</div><div className="mt-1 text-lg font-semibold tracking-tight">A path taking shape</div></div>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#171717] text-lime-300"><Sparkles className="h-4 w-4" /></span>
+                  </div>
+                  <div className="mt-6 rounded-2xl bg-[#ece9ff] p-5 sm:p-6">
+                    <div className="flex items-start justify-between gap-3"><div><div className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-700">A strong match</div><div className="mt-2 text-2xl font-semibold tracking-tight">Product Designer</div><div className="mt-1 text-sm text-[#666174]">Creative thinking · User empathy · Research</div></div><div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-[5px] border-violet-600/20 border-t-violet-600 text-xs font-bold text-violet-800">86%</div></div>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl border border-black/10 bg-white p-4"><div className="text-xs text-[#85857f]">SKILLS MATCHED</div><div className="mt-2 text-2xl font-semibold">8 <span className="text-sm font-normal text-[#85857f]">of 12</span></div><div className="mt-3 h-1.5 rounded-full bg-[#ecebe6]"><div className="h-full w-2/3 rounded-full bg-violet-600" /></div></div>
+                    <div className="rounded-2xl border border-black/10 bg-white p-4"><div className="text-xs text-[#85857f]">NEXT MILESTONE</div><div className="mt-2 text-base font-semibold">Build a portfolio</div><div className="mt-2 text-xs text-[#85857f]">A 3-week guided project</div></div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-3 rounded-2xl bg-[#eaf2dc] p-4"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-lime-300"><Check className="h-4 w-4" /></span><div><div className="text-sm font-semibold">Your next step is ready</div><div className="mt-0.5 text-xs text-[#696e60]">A practical roadmap, made for you.</div></div><ArrowRight className="ml-auto h-4 w-4" /></div>
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -right-3 hidden rounded-full border border-black/10 bg-white px-5 py-3 text-xs font-semibold shadow-lg sm:block">Progress that feels like yours <span className="ml-2 text-violet-700">↗</span></div>
+            </div>
           </div>
         </section>
 
-        <section id="how-it-works" className="bg-slate-50 py-20">
-          <div className="w-full px-5 sm:px-8 lg:px-12">
-            <div className="mb-12 text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-600">How it works</p>
-              <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl">Take the next step with clarity</h2>
+        <section id="approach" className="bg-[#171717] px-5 py-20 text-white sm:px-9 sm:py-28 lg:px-14">
+          <div className="mx-auto max-w-[1440px]">
+            <div className="grid gap-8 lg:grid-cols-[0.65fr_1.35fr] lg:items-end">
+              <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">The approach</p><p className="mt-4 text-sm text-white/50">A little clarity goes a long way.</p></div>
+              <h2 className="max-w-4xl text-4xl font-medium leading-[1.05] tracking-[-0.05em] sm:text-6xl lg:text-7xl">Less guessing. More <span className="font-serif italic text-lime-300">forward.</span></h2>
             </div>
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              {steps.map((step, index) => (
-                <div key={step} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg">
-                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-indigo-50 text-base font-bold text-indigo-700">
-                    {index + 1}
-                  </div>
-                  <p className="text-lg font-semibold text-slate-800">{step}</p>
-                </div>
+            <div className="mt-14 grid border-t border-white/15 md:grid-cols-3">
+              {features.map(({ number, title, description, icon: Icon, color }) => (
+                <article key={number} className="group border-b border-white/15 py-7 md:border-b-0 md:border-r md:px-7 md:first:pl-0 md:last:border-r-0 md:last:pr-0">
+                  <div className="flex items-center justify-between"><span className="text-xs text-white/40">{number}</span><span className={`flex h-10 w-10 items-center justify-center rounded-full ${color}`}><Icon className="h-5 w-5" /></span></div>
+                  <h3 className="mt-8 text-2xl font-medium tracking-tight">{title}</h3><p className="mt-3 max-w-sm text-sm leading-6 text-white/55">{description}</p>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="features" className="w-full px-5 py-20 sm:px-8 lg:px-12">
-          <div className="mb-10 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-600">Features</p>
-            <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl">Everything you need to build a clear career path</h2>
-          </div>
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {features.map(({ title, description, icon: Icon }) => (
-              <div key={title} className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="mb-3 text-xl font-bold text-slate-900">{title}</h3>
-                <p className="text-base leading-7 text-slate-600">{description}</p>
-              </div>
+        <section id="tools" className="mx-auto max-w-[1440px] px-5 py-20 sm:px-9 sm:py-28 lg:px-14">
+          <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700">Your toolkit</p><h2 className="mt-4 max-w-2xl text-4xl font-semibold tracking-[-0.05em] sm:text-6xl">Everything you need to make progress.</h2></div><p className="max-w-sm text-base leading-7 text-[#696964]">One connected workspace for every step between “what if?” and “I’m ready.”</p></div>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: Target, title: 'Career assessment', note: 'Get to know what fits you.' },
+              { icon: Compass, title: 'Career explorer', note: 'See where your strengths lead.' },
+              { icon: BookOpen, title: 'Learning roadmap', note: 'Know what to learn next.' },
+              { icon: Briefcase, title: 'Job matching', note: 'Find roles that match your path.' },
+            ].map(({ icon: Icon, title, note }, i) => (
+              <article key={title} className={`min-h-56 rounded-[1.5rem] p-6 transition hover:-translate-y-1 ${['bg-[#e9e5ff]', 'bg-[#e6efda]', 'bg-[#e1edf2]', 'bg-[#f0e5dc]'][i]}`}>
+                <div className="flex items-center justify-between"><Icon className="h-6 w-6" /><span className="text-xs opacity-50">0{i + 1}</span></div><h3 className="mt-12 text-xl font-semibold tracking-tight">{title}</h3><p className="mt-2 text-sm opacity-65">{note}</p>
+              </article>
             ))}
           </div>
         </section>
 
-        <section id="journey" className="bg-slate-50 py-20">
-          <div className="w-full px-5 sm:px-8 lg:px-12">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-600">Career journey</p>
-              <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl">From exploration to opportunity</h2>
-            </div>
-            <div className="flex flex-wrap justify-center gap-3 text-sm font-medium text-slate-700">
-              {['Profile', 'Assessment', 'Career', 'Skills', 'Learning', 'Projects', 'Resume', 'Jobs', 'Application'].map((item, index) => (
-                <div key={item} className="flex items-center gap-3">
-                  <div className="rounded-full bg-white px-4 py-2 shadow-sm ring-1 ring-slate-200">{item}</div>
-                  {index < 8 ? <ArrowRight className="h-4 w-4 text-slate-400" /> : null}
-                </div>
-              ))}
-            </div>
+        <section id="journey" className="px-5 pb-20 sm:px-9 sm:pb-28 lg:px-14">
+          <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 rounded-[2rem] bg-violet-700 p-8 text-white sm:p-12 lg:flex-row lg:items-end lg:p-16">
+            <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-200">Your next chapter</p><h2 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.05em] sm:text-6xl">You don’t need the whole map. Just the next step.</h2><p className="mt-5 max-w-xl text-base leading-7 text-white/70">Start with where you are. We’ll help you figure out where to go.</p></div>
+            <button onClick={() => navigate('/signup')} className="group inline-flex shrink-0 items-center gap-5 rounded-full bg-lime-300 px-6 py-4 text-sm font-semibold text-[#171717] transition hover:bg-white">Start your journey <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></button>
           </div>
         </section>
-
-        <section className="w-full px-5 py-24 text-center sm:px-8 lg:px-12">
-          <h2 className="text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl">Build the career you want.</h2>
-          <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600 lg:text-xl">Create your personalized strategy, unlock job-ready skills, and move with confidence toward the career you truly want.</p>
-          <button onClick={() => navigate('/assessment')} className="mt-9 inline-flex items-center gap-3 rounded-full bg-indigo-600 px-7 py-4 text-base font-bold text-white shadow-lg shadow-indigo-600/25 transition hover:-translate-y-1 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            Start your journey
-            <Rocket className="h-4 w-4" />
-          </button>
-        </section>
       </main>
+      <footer className="border-t border-black/10 px-5 py-6 sm:px-9 lg:px-14"><div className="mx-auto flex max-w-[1440px] items-center justify-between text-xs text-[#777771]"><span>© CareerPilot</span><span>Find your direction. Move forward.</span></div></footer>
     </div>
   );
 }

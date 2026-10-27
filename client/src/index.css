@@ -1,11 +1,11 @@
 @import 'tailwindcss';
 
 :root {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: #0f172a;
-  background-color: #f8fafc;
+  background-color: #f5f4f0;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -20,8 +20,115 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #f8fafc;
+  background: #f5f4f0;
   color: #0f172a;
+}
+
+/* Keep the signed-in workspace close to the warm, editorial landing-page palette. */
+:root:not([data-theme]),
+:root[data-theme='light'] { --workspace-paper: #f5f4f0; --workspace-card: #fbfaf7; --workspace-line: #e5e2da; }
+:root:not([data-theme]) body,
+:root[data-theme='light'] body { background: var(--workspace-paper); }
+:root:not([data-theme]) .bg-white,
+:root[data-theme='light'] .bg-white { background-color: var(--workspace-card); }
+:root:not([data-theme]) .bg-slate-50,
+:root[data-theme='light'] .bg-slate-50 { background-color: #efeee8; }
+:root:not([data-theme]) [class*='border-slate-'],
+:root[data-theme='light'] [class*='border-slate-'] { border-color: var(--workspace-line); }
+:root:not([data-theme]) [class~='rounded-3xl'],
+:root[data-theme='light'] [class~='rounded-3xl'] { border-radius: 1.35rem; }
+:root:not([data-theme]) [class~='rounded-2xl'],
+:root[data-theme='light'] [class~='rounded-2xl'] { border-radius: 1.05rem; }
+
+/* Workspace color themes selected from Account preferences. */
+:root[data-theme='dark'],
+:root[data-theme='midnight'],
+:root[data-theme='forest'] {
+  color-scheme: dark;
+}
+
+:root[data-theme='dark'] body,
+:root[data-theme='midnight'] body,
+:root[data-theme='forest'] body {
+  background: #111827;
+  color: #e2e8f0;
+}
+
+:root[data-theme='dark'] [class*='bg-[#f5f7fb]'],
+:root[data-theme='midnight'] [class*='bg-[#f5f7fb]'],
+:root[data-theme='forest'] [class*='bg-[#f5f7fb]'] { background-color: #111827 !important; }
+:root[data-theme='dark'] [class*='bg-[#f5f4f0]'],
+:root[data-theme='midnight'] [class*='bg-[#f5f4f0]'],
+:root[data-theme='forest'] [class*='bg-[#f5f4f0]'] { background-color: #111827 !important; }
+:root[data-theme='midnight'] body,
+:root[data-theme='midnight'] [class*='bg-[#f5f7fb]'],
+:root[data-theme='midnight'] [class*='bg-[#f5f4f0]'] { background-color: #0b1220; }
+:root[data-theme='forest'] body,
+:root[data-theme='forest'] [class*='bg-[#f5f7fb]'],
+:root[data-theme='forest'] [class*='bg-[#f5f4f0]'] { background-color: #101b18; }
+
+:root[data-theme='dark'] .bg-white,
+:root[data-theme='midnight'] .bg-white,
+:root[data-theme='forest'] .bg-white { background-color: #1e293b !important; }
+:root[data-theme='midnight'] .bg-white { background-color: #172338 !important; }
+:root[data-theme='forest'] .bg-white { background-color: #1b3029 !important; }
+:root[data-theme='dark'] .bg-slate-50,
+:root[data-theme='midnight'] .bg-slate-50,
+:root[data-theme='forest'] .bg-slate-50 { background-color: #273449 !important; }
+:root[data-theme='dark'] [class*='border-slate-'],
+:root[data-theme='midnight'] [class*='border-slate-'],
+:root[data-theme='forest'] [class*='border-slate-'] { border-color: #334155 !important; }
+:root[data-theme='dark'] [class*='text-slate-9'],
+:root[data-theme='dark'] [class*='text-slate-8'],
+:root[data-theme='dark'] [class*='text-slate-7'],
+:root[data-theme='midnight'] [class*='text-slate-9'],
+:root[data-theme='midnight'] [class*='text-slate-8'],
+:root[data-theme='midnight'] [class*='text-slate-7'],
+:root[data-theme='forest'] [class*='text-slate-9'],
+:root[data-theme='forest'] [class*='text-slate-8'],
+:root[data-theme='forest'] [class*='text-slate-7'] { color: #e2e8f0 !important; }
+:root[data-theme='dark'] [class*='text-slate-6'],
+:root[data-theme='dark'] [class*='text-slate-5'],
+:root[data-theme='midnight'] [class*='text-slate-6'],
+:root[data-theme='midnight'] [class*='text-slate-5'],
+:root[data-theme='forest'] [class*='text-slate-6'],
+:root[data-theme='forest'] [class*='text-slate-5'] { color: #94a3b8 !important; }
+
+/* Shared finishing details for landing, auth, settings, and workspace screens. */
+:root:not([data-theme='dark']):not([data-theme='midnight']):not([data-theme='forest']) .bg-indigo-600 { background-color: #6749d4; }
+:root:not([data-theme='dark']):not([data-theme='midnight']):not([data-theme='forest']) .text-indigo-600 { color: #6749d4; }
+:root:not([data-theme='dark']):not([data-theme='midnight']):not([data-theme='forest']) .bg-indigo-50 { background-color: #eeeaff; }
+input,
+select,
+textarea {
+  border-color: #dedbd2;
+  border-radius: 0.85rem;
+  background-color: #fffefa;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #8065df;
+  box-shadow: 0 0 0 3px rgba(103, 73, 212, 0.12);
+}
+
+button {
+  transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+:root[data-theme='dark'] input,
+:root[data-theme='dark'] select,
+:root[data-theme='dark'] textarea,
+:root[data-theme='midnight'] input,
+:root[data-theme='midnight'] select,
+:root[data-theme='midnight'] textarea,
+:root[data-theme='forest'] input,
+:root[data-theme='forest'] select,
+:root[data-theme='forest'] textarea {
+  border-color: #475569;
+  background-color: #1e293b;
+  color: #e2e8f0;
 }
 
 * {
@@ -30,6 +137,21 @@ body {
 
 #root {
   min-height: 100vh;
+}
+
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.3);
+  outline-offset: 2px;
 }
 
 @media print {
