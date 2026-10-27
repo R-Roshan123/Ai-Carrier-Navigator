@@ -11,8 +11,10 @@ export const requireDatabase = (req, res, next) => {
   next();
 };
 
-// Use after `protect`. Confirms the token's user still exists (tokens from the
-// old in-memory auth or deleted accounts would otherwise hit foreign-key errors).
+// Use after `protect` + `requireDatabase`.
+// `protect` already validates the user exists and refreshes req.user.role when
+// the DB is connected.  This middleware is kept as an explicit belt-and-suspenders
+// guard on career routes: if for any reason req.user.role is stale it re-reads it.
 export const requireCareerUser = async (req, res, next) => {
   const { rows } = await pool.query('SELECT id, role FROM users WHERE id = $1', [req.user?.id]);
   if (!rows[0]) {
@@ -21,3 +23,4 @@ export const requireCareerUser = async (req, res, next) => {
   req.user.role = rows[0].role;
   next();
 };
+

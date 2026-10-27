@@ -66,6 +66,8 @@ export const careerCertifications = [
     level: 'Intermediate',
     cost: 'Approx. USD 395 (discounts are frequent)',
     isFree: false,
+    // Linux Foundation publishes a 3-year validity; verify on the official page
+    // before communicating this to candidates as the policy can change.
     validity: '3 years',
     examDetails: 'Performance-based, online proctored exam solving real Node.js tasks in 2 hours.',
     officialUrl: 'https://training.linuxfoundation.org/certification/jsnad/',
@@ -128,14 +130,16 @@ export const careerCertifications = [
   },
   {
     key: 'tableau-analyst',
-    name: 'Tableau Certified Data Analyst',
+    // Salesforce renamed this cert in 2023; verify the exact name on the official page.
+    name: 'Tableau Certified Associate',
     provider: 'Tableau',
     level: 'Intermediate',
+    // Approx. USD 250 as of writing; Salesforce/Tableau pricing changes frequently.
     cost: 'Approx. USD 250',
     isFree: false,
     validity: '2 years (maintenance required)',
     examDetails: 'Proctored exam with multiple-choice and hands-on Tableau tasks.',
-    officialUrl: 'https://www.tableau.com/learn/certification',
+    officialUrl: 'https://www.salesforce.com/trailhead/en/credentials/tableau-certified-associate/',
     importance: 'Recommended',
     roles: ['data-analyst'],
   },
@@ -254,7 +258,8 @@ export const careerCertifications = [
     isFree: true,
     validity: 'Tied to the exam version; recertify on new releases',
     examDetails: 'Online proctored multiple-choice exam, about 90 minutes.',
-    officialUrl: 'https://education.oracle.com/',
+    // Direct link to the OCI Foundations Associate certification page.
+    officialUrl: 'https://education.oracle.com/oracle-cloud-infrastructure-2023-foundations-associate/pexam_1Z0-1085-23',
     importance: 'Optional',
     roles: ['cloud-engineer'],
   },
